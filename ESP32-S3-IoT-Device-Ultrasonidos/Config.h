@@ -39,12 +39,17 @@
 // TOPIC_COBOT_1 : el cobot publica si esta operando?
 #define TOPIC_COBOT_1             "A1/cobot/cinta/cajas/final"
 
+// PINES
 // IO
 #define LED_ROJO                  2  // Pin rojo led RGB
 #define LED_VERDE                 3  // Pin verde led RGB
 #define LED_AZUL                  4  // Pin azul led RGB
 #define TRIGGER_PIN_ULTRASONIDOS  5  // Pin trigger del ultrasonidos
 #define ECHO_PIN_ULTRASONIDOS     6  // Pin echo del ultrasonidos
+// INTERRUPCION BOTON
+#define LED_1  2
+#define LED_2  3
+#define PIN_BUTTON 13
 
 #endif
 

@@ -1,8 +1,7 @@
 /**
- @file button_interrupt.h
+ @file button_interrupt.ino
 */
 
-#include <Arduino.h>
 #include "button_interrupt.h"
 
 void IRAM_ATTR isr() 

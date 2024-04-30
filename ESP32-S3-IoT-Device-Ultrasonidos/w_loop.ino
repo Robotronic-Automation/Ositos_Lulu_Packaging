@@ -3,7 +3,6 @@
 */
 
 #include <string>
-#include "button_interrupt.h"
 
 //long now, lastMsg = 0;             // now --> current time  ; lastMsg --> last time a message was sent
 //long sensorsUpdateInterval = 1000; // Tiempo de actualización de los sensores
@@ -62,11 +61,13 @@ void on_loop()
   Serial.println("Inicio Main");
   while (!PARAR)
   {
-  if (button1.pressed) {
+    if (button1.pressed) {
       Serial.printf("El botón se ha pulsado %u veces\n", button1.numberKeyPresses);
+      digitalWrite( LED_1, HIGH );
+      digitalWrite( LED_2, HIGH );
       button1.pressed = false;
-  }
-  delay(100);
+    }
+    delay(100);
   }
   Serial.println("CERRANDO");
   delay(3000);

@@ -2,8 +2,8 @@
  @file buffer_circ_prot.h
 */
 
-#ifndef BUFFER_CIRC_H
-#define BUFFER_CIRC_H
+#ifndef BUFFER_CIRC_PROT_H
+#define BUFFER_CIRC_PROT_H
 
 #include "src/quirc/quirc.h"
 #define BUFSIZE 10
@@ -14,7 +14,7 @@
 
 typedef struct Buffer 
 {
-	struct quirc_data datos[BUFSIZE];
+	int datos[BUFSIZE];
 	int bufIN = 0;
   int bufOUT = 0;
   int contador = 0;
@@ -28,10 +28,10 @@ bool isEmpty(Buffer_Circ* buff);
 bool isFull(Buffer_Circ* buff);
 
 //Funcion para obtener elemento del Buffer
-int get_item(struct quirc_data * X, Buffer_Circ* buff );
+int get_item(int * data, Buffer_Circ* buff );
 
 //Función para introducir elemento en el Buffer
-int put_item(struct quirc_data  X , Buffer_Circ* buff );
+int put_item(int data, Buffer_Circ* buff );
 
 //Función para saber cuántos elementos tiene el Buffer
 int number(Buffer_Circ* buff);

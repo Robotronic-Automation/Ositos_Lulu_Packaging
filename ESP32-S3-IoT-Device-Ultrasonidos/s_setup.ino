@@ -2,8 +2,7 @@
  @file s_setup.ino
 */
 
-#include "button_interrupt.h"
-#include "buffer_circ_prot.h"
+#include <string>
 
 #define SensorsUpdateInterval 1000 // 1 segundo de frecuencia de muestreo
 
@@ -86,8 +85,11 @@ void Productor( void * parameter )
     {
         // si el buffer esta lleno y no puedo insertar dato...
     }
+    else
+    {
+      Serial.printf("Inserto dato %d\n", cm);
+    }
     vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS) );
-    Serial.printf("Inserto dato %d\n", cm);
   }
     Serial.println("Finalizando tarea 1");
     vTaskDelete( NULL );
@@ -107,15 +109,18 @@ void Consumidor( void * parameter )
     if(get_item(&cm, buff_prod) == 0)
     {
       // Si he podido obtener dato...
+      Serial.printf("saco dato %d\n", cm);
       // Asignamos mensaje segun la distancia
       String value;
       if( cm <= 25 )
       {
         value = "detectado";
+        // Parar el motor dc de la cinta...
       }
       else 
       {
         value = "libre";
+        // Reactivar motor dc de la cinta...
       }
 
       // Hacemos documento de json con el mensaje y enviamos por topic
@@ -126,11 +131,55 @@ void Consumidor( void * parameter )
       enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
     } 
  
-    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
-    Serial.printf("saco dato %d\n", cm);
+    //vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    
   }
   Serial.println("Finalizando tarea 2");
   vTaskDelete( NULL );
 }
+
+/*
+// Tarea para gestionar comunicaciones con el broker MQTT
+void GestorComunicMQTT( void * parameter )
+{
+  int cm;
+  TickType_t xLastWakeTime;
+  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
+  Serial.printf("Hola desde la tarea 2 en el Core %d\n", xPortGetCoreID());
+  xLastWakeTime = xTaskGetTickCount();
+  while (!PARAR)
+  {
+    if(get_item(&cm, buff_prod) == 0)
+    {
+      // Si he podido obtener dato...
+      Serial.printf("saco dato %d\n", cm);
+      // Asignamos mensaje segun la distancia
+      String value;
+      if( cm <= 25 )
+      {
+        value = "detectado";
+        // Parar el motor dc de la cinta...
+      }
+      else 
+      {
+        value = "libre";
+        // Reactivar motor dc de la cinta...
+      }
+
+      // Hacemos documento de json con el mensaje y enviamos por topic
+      JsonDocument doc;
+      doc["presencia"] = value;
+      String ULTRASONIDOS_msg_json;
+      serializeJson(doc, ULTRASONIDOS_msg_json);
+      enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
+    } 
+ 
+    //vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    
+  }
+  Serial.println("Finalizando tarea 2");
+  vTaskDelete( NULL );
+}
+*/
 
 /*** End of file ****/
