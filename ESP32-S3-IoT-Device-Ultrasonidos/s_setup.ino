@@ -7,9 +7,14 @@
 #define SensorsUpdateInterval 1000 // 1 segundo de frecuencia de muestreo
 
 // creating a task handle
-TaskHandle_t Productor_Task, Consumidor_Task;
+TaskHandle_t Productor_Task, Consumidor_Task, GestorComMQTT_Task;
 // creating buffer circular protegido
-static Buffer_Circ Mi_buffer;
+static Buffer_Circ Measure_buffer;
+//static Buffer_Circ Message_buffer;
+
+//void GestorComMQTT( void * parameter );
+void Productor( void * parameter );
+void Consumidor( void * parameter );
 
 /**
  @brief on_setup. Añadir la configuración de pines, inicialización de variables, 
@@ -51,7 +56,7 @@ void on_setup()
              Productor,             /* Task function. */
              "Productor",           /* name of task. */
              10000,                 /* Stack size of task */
-             &Mi_buffer,            /* parameter of the task */
+             &Measure_buffer,       /* parameter of the task */
              1,                     /* priority of the task */
              &Productor_Task,       /* Task handle to keep track of created task */
              0);                    /* pin task to core 0 */
@@ -61,10 +66,19 @@ void on_setup()
              Consumidor,            /* Task function. */
              "Consumidor",          /* name of task. */
              10000,                 /* Stack size of task */
-             &Mi_buffer,            /* parameter of the task */
+             &Measure_buffer,       /* parameter of the task */
              1,                     /* priority of the task */
              &Consumidor_Task,      /* Task handle to keep track of created task */
              1);                    /* pin task to core 0 */
+    
+    // Create "GestorComMQTT_Task" using the xTaskCreatePinnedToCore() function 
+    //xTaskCreate(
+      //       GestorComMQTT,         /* Task function. */
+        //     "GestorComMQTT",       /* name of task. */
+          //   10000,                 /* Stack size of task */
+            // &Message_buffer,       /* parameter of the task */
+             //1,                     /* priority of the task */
+             //&GestorComMQTT_Task);  /* Task handle to keep track of created task */
     
     delay(1000);
 
@@ -131,7 +145,7 @@ void Consumidor( void * parameter )
       enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
     } 
  
-    //vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
     
   }
   Serial.println("Finalizando tarea 2");
@@ -140,7 +154,7 @@ void Consumidor( void * parameter )
 
 /*
 // Tarea para gestionar comunicaciones con el broker MQTT
-void GestorComunicMQTT( void * parameter )
+void GestorComMQTT( void * parameter )
 {
   int cm;
   TickType_t xLastWakeTime;

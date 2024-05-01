@@ -46,7 +46,7 @@ int get_item(int* data, Buffer_Circ* buff )
 		//Aritmetica en módulo del índice del vector
 		buff->bufOUT = (buff->bufOUT+1) % BUFSIZE;
     portEXIT_CRITICAL (&(buff->taskMux)); 
-    Serial.printf("Sacas dato de posicion %d\n",  buff->bufOUT);
+    //Serial.printf("Sacas dato de posicion %d\n",  buff->bufOUT);
 		return 0;	
 	}
 }
@@ -67,7 +67,7 @@ int put_item(int data, Buffer_Circ* buff )
 		//Aritmetica en módulo del índice del vector
 		buff->bufIN = (buff->bufIN+1) % BUFSIZE;
     portEXIT_CRITICAL (&(buff->taskMux)); 
-    Serial.printf("Meto dato, en posicion %d\n", buff->bufIN);
+    //Serial.printf("Meto dato, en posicion %d\n", buff->bufIN);
 		return 0;	
 	}	
 }
