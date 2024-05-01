@@ -28,23 +28,17 @@ void on_setup()
     pinMode(LED_VERDE, OUTPUT);
     pinMode(LED_AZUL, OUTPUT);
 
-    // Inicializa los pines del ultrasonidos: 
-    // trigger --> output  ;  echo --> input
-    pinMode(TRIGGER_PIN_ULTRASONIDOS, OUTPUT);
-    pinMode(ECHO_PIN_ULTRASONIDOS, INPUT);
-
     // Mensaje para comprobar la conexion MQTT
     String hello_msg = String("Hola Mundo! Desde dispositivo ") + deviceID;
 
     // Test JSON
-    /*JsonDocument doc;
+    JsonDocument doc;
     doc["message"] = hello_msg;
-    doc["luminosidad"] = 450;
-    doc["temperatura"] = 21.5;
+    //doc["luminosidad"] = 450;
+    //doc["temperatura"] = 21.5;
     String hello_msg_json;
     serializeJson(doc, hello_msg_json);
     enviarMensajePorTopic(HELLO_TOPIC, hello_msg_json);
-    */
 
     config_camara();
     config_button();
@@ -54,7 +48,7 @@ void on_setup()
              QRCodeReader,          /* Task function. */
              "QRCodeReader_Task",   /* name of task. */
              10000,                 /* Stack size of task */
-             NULL,                  /* parameter of the task */
+             &Mi_buffer,            /* parameter of the task */
              1,                     /* priority of the task */
              &QRCodeReader_Task,    /* Task handle to keep track of created task */
              0);                    /* pin task to core 0 */
@@ -73,6 +67,10 @@ void on_setup()
 
 }
 
+/**
+ @brief QRCodeReader. Tarea para leer codigo QR
+ @param buff_prod. Buffer donde se almacena el codigo QR
+*/
 void QRCodeReader( void * parameter )
 {
   Serial.println("QRCodeReader is ready.");
@@ -80,7 +78,7 @@ void QRCodeReader( void * parameter )
   Serial.println(xPortGetCoreID());
   Serial.println();
   TickType_t xLastWakeTime;
-  Buffer_Circ* buff_prod = (Buffer_Circ*) parameter;
+  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
 //Serial.printf("Hola desde la tarea 1 en el Core %d\n",xPortGetCoreID());
   xLastWakeTime = xTaskGetTickCount();
     while (!PARAR)
@@ -110,12 +108,12 @@ void QRCodeReader( void * parameter )
     
         if (err){
           Serial.println("Decoding FAILED");
-          QRCodeResult = "Decoding FAILED";
+          //QRCodeResult = "Decoding FAILED";
         } else {
           Serial.printf("Decoding successful:\n");
-          dumpData_bis(&data);
+          dumpData_bis(buff_prod, &data);
           //put_item(data,buff_prod);
-          vTaskDelayUntil( &xLastWakeTime, (T_espera/ portTICK_PERIOD_MS));
+          vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
         } 
         Serial.println();
       } 
@@ -136,25 +134,37 @@ void QRCodeReader( void * parameter )
     vTaskDelete( NULL );  
 }
 
-// Tarea para interpretar mediciones del sensor y tomar acciones 
+/**
+ @brief Consumidor. Tarea para interpretar mediciones del sensor y tomar acciones 
+ @param buff_prod. Buffer donde se obtiene el codigo QR
+*/
 void Consumidor( void * parameter )
 {
-  int cm;
+  String qr, qr_last = "";
   TickType_t xLastWakeTime;
   Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
   Serial.printf("Hola desde la tarea 2 en el Core %d\n", xPortGetCoreID());
   xLastWakeTime = xTaskGetTickCount();
   while (!PARAR)
   {
-    if(get_item(&cm, buff_prod) == 0)
+    if(get_item(qr, buff_prod) == 0)
     {
       // Si he podido obtener dato...
-      Serial.printf("saco dato %d\n", cm);
+      //Serial.printf("saco dato %d\n", cm);
       // Asignamos mensaje segun la distancia
       String value;
-      if( cm <= 25 )
+      if( !qr.equals(qr_last) )
       {
         value = "detectado";
+        /*
+        // Hacemos documento de json con el mensaje y enviamos por topic
+        JsonDocument doc;
+        doc["codProducto"] = qr;
+        String QR_msg_json;
+        serializeJson(doc, QR_msg_json);
+        enviarMensajePorTopic(TOPIC_QR, QR_msg_json);
+        */
+        qr_last = qr;
         // Parar el motor dc de la cinta...
       }
       else 
@@ -162,16 +172,16 @@ void Consumidor( void * parameter )
         value = "libre";
         // Reactivar motor dc de la cinta...
       }
-
+      
       // Hacemos documento de json con el mensaje y enviamos por topic
       JsonDocument doc;
       doc["presencia"] = value;
-      String ULTRASONIDOS_msg_json;
-      serializeJson(doc, ULTRASONIDOS_msg_json);
-      enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
+      String QR_msg_json;
+      serializeJson(doc, QR_msg_json);
+      enviarMensajePorTopic(TOPIC_QR, QR_msg_json);
     } 
  
-    //vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
     
   }
   Serial.println("Finalizando tarea 2");

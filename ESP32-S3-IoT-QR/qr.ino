@@ -4,7 +4,11 @@
 
 #include "qr.h"
 
-/* Function to config the camera */
+/**
+ @brief config_camara. Funcion para configurar la camara 
+ @param  ninguno
+ @return ninguno
+*/ 
 void config_camara()
 {
   /* Camera configuration. */
@@ -46,16 +50,25 @@ void config_camara()
   Serial.println("Configure and initialize the camera successfully.");
   Serial.println();}
 
-/* Function to display the results of reading the QR Code on the serial monitor. */
-void dumpData_bis(const struct quirc_data *data)
+/**
+ @brief config_camara. Funcion para mostrar los resultados de lectura 
+                       del codigo QR en el serial monitor
+ @param  buff_prod. Buffer para guardar el payload del codigo QR
+ @param  data. Estructura con la informacion del codigo QR
+ @return ninguno
+*/ 
+void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data)
 {
+  String QRCodeResult;
   Serial.printf("Version: %d\n", data->version);
   Serial.printf("ECC level: %c\n", "MLHQ"[data->ecc_level]);
   Serial.printf("Mask: %d\n", data->mask);
   Serial.printf("Length: %d\n", data->payload_len);
   Serial.printf("Payload: %s\n", data->payload);
   
-  //QRCodeResult = (const char *)data->payload;
+  QRCodeResult = (const char *)data->payload;
+
+  put_item(QRCodeResult, buff_prod);
 }
 
 /*** End of file ****/

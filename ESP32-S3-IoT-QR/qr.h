@@ -28,7 +28,8 @@
   #define HREF_GPIO_NUM     7
   #define PCLK_GPIO_NUM     13
  
-/*  Variables declaration */
+/*  Declaracion de Variables */
+
 struct QRCodeData
 {
   bool valid;
@@ -44,12 +45,12 @@ struct quirc_code code;
 struct quirc_data data;
 quirc_decode_error_t err;
 struct QRCodeData qrCodeData;  
-String QRCodeResult = "";
+//String QRCodeResult = "";
 
-/* Function to config the camera */
+// Funcion para configurar la camara 
 void config_camara();
-/* Function to display the results of reading the QR Code on the serial monitor. */
-void dumpData_bis(const struct quirc_data *data);
+// Funcion para mostrar los resultados de lectura del codigo QR en el serial monitor
+void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data);
 
 #endif
 
