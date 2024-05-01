@@ -32,6 +32,8 @@
 #define MQTT_SERVER_PORT          1883
 
 // TOPICS
+// HELLO_TOPIC
+#define HELLO_TOPIC               "A1"
 // TOPIC_PRESENCIA : manda si se detecta objeto o no
 #define TOPIC_PRESENCIA           "A1/sensor/presencia/cinta/cajas/final"
 // TOPIC_COLOR : manda rojo si el cobot está operando y verde si no

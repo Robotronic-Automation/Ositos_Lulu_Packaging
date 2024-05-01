@@ -7,8 +7,12 @@
 #define SensorsUpdateInterval 1000 // 1 segundo de frecuencia de muestreo
 
 // creating a task handle
-TaskHandle_t Productor_Task, Consumidor_Task, GestorComMQTT_Task;
+TaskHandle_t Productor_Task, Consumidor_Task;
+//TaskHandle_t GestorComMQTT_Task;
 // creating buffer circular protegido
+// Buffers[0] --> Measure_buffer
+// Buffers[1] --> Message_buffer
+//static Buffer_Circ Buffers[2]; 
 static Buffer_Circ Measure_buffer;
 //static Buffer_Circ Message_buffer;
 
@@ -39,14 +43,14 @@ void on_setup()
     String hello_msg = String("Hola Mundo! Desde dispositivo ") + deviceID;
 
     // Test JSON
-    /*JsonDocument doc;
+    JsonDocument doc;
     doc["message"] = hello_msg;
-    doc["luminosidad"] = 450;
-    doc["temperatura"] = 21.5;
+    //doc["luminosidad"] = 450;
+    //doc["temperatura"] = 21.5;
     String hello_msg_json;
     serializeJson(doc, hello_msg_json);
     enviarMensajePorTopic(HELLO_TOPIC, hello_msg_json);
-    */
+    
 
     // Configuramos interrupcion con el boton
     config_button();
@@ -73,18 +77,21 @@ void on_setup()
     
     // Create "GestorComMQTT_Task" using the xTaskCreatePinnedToCore() function 
     //xTaskCreate(
-      //       GestorComMQTT,         /* Task function. */
-        //     "GestorComMQTT",       /* name of task. */
-          //   10000,                 /* Stack size of task */
-            // &Message_buffer,       /* parameter of the task */
-             //1,                     /* priority of the task */
-             //&GestorComMQTT_Task);  /* Task handle to keep track of created task */
+    //         GestorComMQTT,         /* Task function. */
+    //         "GestorComMQTT",       /* name of task. */
+    //         10000,                 /* Stack size of task */
+    //         &Measure_buffer,       /* parameter of the task */
+    //         1,                     /* priority of the task */
+    //         &GestorComMQTT_Task);  /* Task handle to keep track of created task */
     
     delay(1000);
 
 }
 
-// Tarea para tomar mediciones del sensor ultrasonidos
+/**
+ @brief Productor. Tarea para tomar mediciones del sensor ultrasonidos
+ @param buff_prod. Buffer donde se almacenan las medidas
+*/
 void Productor( void * parameter )
 {
   TickType_t xLastWakeTime;
@@ -95,13 +102,13 @@ void Productor( void * parameter )
   {
     // Leemos sensor ultrasonidos y guardamos distancia
     int cm = ping(TRIGGER_PIN_ULTRASONIDOS, ECHO_PIN_ULTRASONIDOS);
-    if(put_item(cm, buff_prod) == -1)
+    if(put_item(cm, &buff_prod[0]) == -1)
     {
         // si el buffer esta lleno y no puedo insertar dato...
     }
     else
     {
-      Serial.printf("Inserto dato %d\n", cm);
+      //Serial.printf("Inserto dato %d\n", cm);
     }
     vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS) );
   }
@@ -110,7 +117,10 @@ void Productor( void * parameter )
     
 }
 
-// Tarea para interpretar mediciones del sensor y tomar acciones 
+/**
+ @brief Consumidor. Tarea para interpretar mediciones del sensor y tomar acciones 
+ @param buff_prod. Buffer donde se obtienen las medidas
+*/
 void Consumidor( void * parameter )
 {
   int cm;
@@ -120,10 +130,10 @@ void Consumidor( void * parameter )
   xLastWakeTime = xTaskGetTickCount();
   while (!PARAR)
   {
-    if(get_item(&cm, buff_prod) == 0)
+    if(get_item(&cm, &buff_prod[0]) == 0)
     {
       // Si he podido obtener dato...
-      Serial.printf("saco dato %d\n", cm);
+      //Serial.printf("saco dato %d\n", cm);
       // Asignamos mensaje segun la distancia
       String value;
       if( cm <= 25 )
@@ -152,34 +162,26 @@ void Consumidor( void * parameter )
   vTaskDelete( NULL );
 }
 
+/**
+ @brief GestorComMQTT. Tarea para gestionar comunicaciones con el broker MQTT
+ @param buff_prod. Buffer donde se obtienen los mensajes
+*/
 /*
-// Tarea para gestionar comunicaciones con el broker MQTT
 void GestorComMQTT( void * parameter )
 {
-  int cm;
+  String msg;
   TickType_t xLastWakeTime;
   Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
   Serial.printf("Hola desde la tarea 2 en el Core %d\n", xPortGetCoreID());
   xLastWakeTime = xTaskGetTickCount();
   while (!PARAR)
   {
-    if(get_item(&cm, buff_prod) == 0)
+    if(get_item(msg, buff_prod) == 0)
     {
       // Si he podido obtener dato...
-      Serial.printf("saco dato %d\n", cm);
+      //Serial.printf("saco dato %d\n", cm);
       // Asignamos mensaje segun la distancia
-      String value;
-      if( cm <= 25 )
-      {
-        value = "detectado";
-        // Parar el motor dc de la cinta...
-      }
-      else 
-      {
-        value = "libre";
-        // Reactivar motor dc de la cinta...
-      }
-
+      
       // Hacemos documento de json con el mensaje y enviamos por topic
       JsonDocument doc;
       doc["presencia"] = value;
