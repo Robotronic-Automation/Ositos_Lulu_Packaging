@@ -17,19 +17,19 @@
 #define DEVICE_GIIROB_PR2_ID      "17" //"giirobpr2_00"
 
 // WIFI
-//#define NET_SSID                  "UPV-PSK"
-//#define NET_PASSWD                "giirob-pr2-2023"
-#define NET_SSID                    "topo1234"
-#define NET_PASSWD                  "every7652"
+#define NET_SSID                  "UPV-PSK"
+#define NET_PASSWD                "giirob-pr2-2023"
+//#define NET_SSID                    "topo1234"
+//#define NET_PASSWD                  "every7652"
 
 // MQTT
-//#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"
-//#define MQTT_SERVER_PORT          1883
-//#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
-//#define MQTT_PASSWORD             "UPV2024"
-
-#define MQTT_SERVER_IP            "broker.emqx.io"
+#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"
 #define MQTT_SERVER_PORT          1883
+#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
+#define MQTT_PASSWORD             "UPV2024"
+
+//#define MQTT_SERVER_IP            "broker.emqx.io"
+//#define MQTT_SERVER_PORT          1883
 
 // TOPICS
 // HELLO_TOPIC
@@ -45,11 +45,11 @@
 // IO
 #define LED_ROJO                  2  // Pin rojo led RGB
 #define LED_VERDE                 3  // Pin verde led RGB
-#define LED_AZUL                  4  // Pin azul led RGB
+#define LED_AZUL                  46  // Pin azul led RGB
 // INTERRUPCION BOTON
 #define LED_1  2
 #define LED_2  3
-#define PIN_BUTTON 13
+#define PIN_BUTTON 20
 
 #endif
 

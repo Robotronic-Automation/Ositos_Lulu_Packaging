@@ -54,6 +54,7 @@ void setup() {
 #ifdef LOGGER_ENABLED
   // Inicializamos comunicaciones serial
   Serial.begin(BAUDS);
+  Serial.setDebugOutput(true);
   delay(1000);
   Serial.println();
 #endif

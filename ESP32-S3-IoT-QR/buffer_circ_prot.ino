@@ -48,7 +48,7 @@ int get_item(String data, Buffer_Circ * buff )
 {
 	if(isEmpty(buff))
   {
-		Serial.printf("Error: No hay datos en el vector\n"); 
+		//Serial.printf("Error: No hay datos en el vector\n"); 
 		return -1;
 	}
 	else
@@ -80,7 +80,7 @@ int put_item(String data, Buffer_Circ * buff )
 	else
   {
     portENTER_CRITICAL (&(buff->taskMux));
-		buff->datos[buff->bufIN]=data;
+		buff->datos[buff->bufIN] = data;
 		buff->contador++;
 		//Aritmetica en módulo del índice del vector
 		buff->bufIN = (buff->bufIN+1) % BUFSIZE;

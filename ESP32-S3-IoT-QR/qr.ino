@@ -57,9 +57,22 @@ void config_camara()
  @param  data. Estructura con la informacion del codigo QR
  @return ninguno
 */ 
+/*
+void dumpData_bis(const struct quirc_data *data)
+{
+  Serial.printf("Version: %d\n", data->version);
+  Serial.printf("ECC level: %c\n", "MLHQ"[data->ecc_level]);
+  Serial.printf("Mask: %d\n", data->mask);
+  Serial.printf("Length: %d\n", data->payload_len);
+  Serial.printf("Payload: %s\n", data->payload);
+  
+  QRCodeResult = (const char *)data->payload;
+}
+*/
+
 void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data)
 {
-  String QRCodeResult;
+  //String QRCodeResult;
   Serial.printf("Version: %d\n", data->version);
   Serial.printf("ECC level: %c\n", "MLHQ"[data->ecc_level]);
   Serial.printf("Mask: %d\n", data->mask);
@@ -70,5 +83,6 @@ void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data)
 
   put_item(QRCodeResult, buff_prod);
 }
+
 
 /*** End of file ****/

@@ -51,7 +51,7 @@ void on_setup()
              &Mi_buffer,            /* parameter of the task */
              1,                     /* priority of the task */
              &QRCodeReader_Task,    /* Task handle to keep track of created task */
-             0);                    /* pin task to core 0 */
+             1);                    /* pin task to core 0 */
 
     /* Create "Consumidor_Task" using the xTaskCreatePinnedToCore() function */
     xTaskCreatePinnedToCore(
@@ -71,6 +71,57 @@ void on_setup()
  @brief QRCodeReader. Tarea para leer codigo QR
  @param buff_prod. Buffer donde se almacena el codigo QR
 */
+/*
+void QRCodeReader( void * pvParameters ){
+  Serial.println("QRCodeReader is ready.");
+  Serial.print("QRCodeReader running on core ");
+  Serial.println(xPortGetCoreID());
+  Serial.println();
+
+  // Loop to read QR Code in real time. 
+  while(1){
+      q = quirc_new();
+      if (q == NULL){
+        Serial.print("can't create quirc object\r\n");  
+        continue;
+      }
+    
+      fb = esp_camera_fb_get();
+      if (!fb)
+      {
+        Serial.println("Camera capture failed");
+        continue;
+      }   
+      
+      quirc_resize(q, fb->width, fb->height);
+      image = quirc_begin(q, NULL, NULL);
+      memcpy(image, fb->buf, fb->len);
+      quirc_end(q);
+      
+      int count = quirc_count(q);
+      if (count > 0) {
+        quirc_extract(q, 0, &code);
+        err = quirc_decode(&code, &data);
+    
+        if (err){
+          Serial.println("Decoding FAILED");
+          QRCodeResult = "Decoding FAILED";
+        } else {
+          Serial.printf("Decoding successful:\n");
+          dumpData_bis(&data);
+        } 
+        Serial.println();
+      } 
+      
+      esp_camera_fb_return(fb);
+      fb = NULL;
+      image = NULL;  
+      quirc_destroy(q);
+  }
+
+}
+*/
+
 void QRCodeReader( void * parameter )
 {
   Serial.println("QRCodeReader is ready.");
@@ -134,6 +185,7 @@ void QRCodeReader( void * parameter )
     vTaskDelete( NULL );  
 }
 
+
 /**
  @brief Consumidor. Tarea para interpretar mediciones del sensor y tomar acciones 
  @param buff_prod. Buffer donde se obtiene el codigo QR
@@ -150,37 +202,15 @@ void Consumidor( void * parameter )
     if(get_item(qr, buff_prod) == 0)
     {
       // Si he podido obtener dato...
-      //Serial.printf("saco dato %d\n", cm);
-      // Asignamos mensaje segun la distancia
-      String value;
-      if( !qr.equals(qr_last) )
-      {
-        value = "detectado";
-        /*
         // Hacemos documento de json con el mensaje y enviamos por topic
         JsonDocument doc;
         doc["codProducto"] = qr;
         String QR_msg_json;
         serializeJson(doc, QR_msg_json);
         enviarMensajePorTopic(TOPIC_QR, QR_msg_json);
-        */
-        qr_last = qr;
-        // Parar el motor dc de la cinta...
-      }
-      else 
-      {
-        value = "libre";
-        // Reactivar motor dc de la cinta...
-      }
-      
-      // Hacemos documento de json con el mensaje y enviamos por topic
-      JsonDocument doc;
-      doc["presencia"] = value;
-      String QR_msg_json;
-      serializeJson(doc, QR_msg_json);
-      enviarMensajePorTopic(TOPIC_QR, QR_msg_json);
+        
     } 
- 
+    
     vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
     
   }
