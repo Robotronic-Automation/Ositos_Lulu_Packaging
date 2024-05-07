@@ -192,7 +192,8 @@ void QRCodeReader( void * parameter )
 */
 void Consumidor( void * parameter )
 {
-  String qr, qr_last = "";
+  //String qr;
+  char qr[10];
   TickType_t xLastWakeTime;
   Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
   Serial.printf("Hola desde la tarea 2 en el Core %d\n", xPortGetCoreID());
@@ -205,12 +206,13 @@ void Consumidor( void * parameter )
         // Hacemos documento de json con el mensaje y enviamos por topic
         JsonDocument doc;
         doc["codProducto"] = qr;
+        printf("QR: %s\n", qr);
         String QR_msg_json;
         serializeJson(doc, QR_msg_json);
         enviarMensajePorTopic(TOPIC_QR, QR_msg_json);
         
     } 
-    
+
     vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
     
   }

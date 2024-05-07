@@ -44,7 +44,7 @@ bool isFull(Buffer_Circ * buff)
  @param  data. Variable en la que se guarda el elemento obtenido
  @return int. 0 --> ejecucion sin errores ; -1 --> buffer vacio
 */
-int get_item(String data, Buffer_Circ * buff )
+int get_item(char data[], Buffer_Circ * buff )
 {
 	if(isEmpty(buff))
   {
@@ -54,7 +54,8 @@ int get_item(String data, Buffer_Circ * buff )
 	else
   {
     portENTER_CRITICAL (&(buff->taskMux));
-		data = buff->datos[buff->bufOUT];
+    strcpy(data, buff->datos[buff->bufOUT]);
+		//data = buff->datos[buff->bufOUT];
 		buff->contador--;
 		//Aritmetica en módulo del índice del vector
 		buff->bufOUT = (buff->bufOUT+1) % BUFSIZE;
@@ -70,7 +71,7 @@ int get_item(String data, Buffer_Circ * buff )
  @param  data. Variable con el elemento a introducir
  @return int. 0 --> ejecucion sin errores ; -1 --> buffer lleno
 */
-int put_item(String data, Buffer_Circ * buff )
+int put_item(char data[], Buffer_Circ * buff )
 {
 	if(isFull(buff))
   {
@@ -80,7 +81,8 @@ int put_item(String data, Buffer_Circ * buff )
 	else
   {
     portENTER_CRITICAL (&(buff->taskMux));
-		buff->datos[buff->bufIN] = data;
+		strcpy(buff->datos[buff->bufIN], data);
+    //buff->datos[buff->bufIN] = data;
 		buff->contador++;
 		//Aritmetica en módulo del índice del vector
 		buff->bufIN = (buff->bufIN+1) % BUFSIZE;

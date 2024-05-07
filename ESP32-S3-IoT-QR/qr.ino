@@ -72,15 +72,16 @@ void dumpData_bis(const struct quirc_data *data)
 
 void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data)
 {
-  //String QRCodeResult;
+  char QRCodeResult[10];
   Serial.printf("Version: %d\n", data->version);
   Serial.printf("ECC level: %c\n", "MLHQ"[data->ecc_level]);
   Serial.printf("Mask: %d\n", data->mask);
   Serial.printf("Length: %d\n", data->payload_len);
   Serial.printf("Payload: %s\n", data->payload);
   
-  QRCodeResult = (const char *)data->payload;
-
+  //QRCodeResult = (const char *)data->payload;
+  strcpy(QRCodeResult,(const char *)data->payload);
+  printf("QRCR: %s\n", QRCodeResult);
   put_item(QRCodeResult, buff_prod);
 }
 

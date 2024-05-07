@@ -45,7 +45,7 @@ struct quirc_code code;
 struct quirc_data data;
 quirc_decode_error_t err;
 struct QRCodeData qrCodeData;  
-String QRCodeResult = "";
+//String QRCodeResult = "";
 
 // Funcion para configurar la camara 
 void config_camara();

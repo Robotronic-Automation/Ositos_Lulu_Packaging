@@ -22,7 +22,7 @@
 */
 typedef struct Buffer 
 {
-	String datos[BUFSIZE];
+	char datos[10][BUFSIZE];
 	int bufIN = 0;
   int bufOUT = 0;
   int contador = 0;
@@ -36,10 +36,10 @@ bool isEmpty(Buffer_Circ * buff);
 bool isFull(Buffer_Circ * buff);
 
 // Funcion para obtener elemento del Buffer
-int get_item(String data, Buffer_Circ * buff );
+int get_item(char data[], Buffer_Circ * buff );
 
 // Función para introducir elemento en el Buffer
-int put_item(String data, Buffer_Circ * buff );
+int put_item(char data[], Buffer_Circ * buff );
 
 // Función para saber cuántos elementos tiene el Buffer
 int number(Buffer_Circ * buff);
