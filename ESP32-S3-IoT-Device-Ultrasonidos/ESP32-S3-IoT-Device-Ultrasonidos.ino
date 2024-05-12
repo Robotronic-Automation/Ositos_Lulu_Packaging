@@ -19,6 +19,7 @@
 #include <ArduinoJson.h>
 #include "button_interrupt.h"
 #include "buffer_circ_prot.h"
+#include "buffer_message.h"
 
 // Variable global para detener el programa en caso de emergencia
 volatile bool PARAR = false;

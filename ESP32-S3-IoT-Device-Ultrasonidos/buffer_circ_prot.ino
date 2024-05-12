@@ -9,7 +9,7 @@
  @param  buff. Puntero al buffer circular que se comprueba
  @return bool. true --> buffer vacio ; false --> buffer con elementos
 */
-bool isEmpty(Buffer_Circ* buff)
+bool isEmpty(Buffer_Circ_Measure * buff)
 {
 	if(buff->contador == 0)
   {
@@ -26,7 +26,7 @@ bool isEmpty(Buffer_Circ* buff)
  @param  buff. Puntero al buffer circular que se comprueba
  @return bool. true --> buffer lleno ; false --> buffer incompleto
 */
-bool isFull(Buffer_Circ* buff)
+bool isFull(Buffer_Circ_Measure * buff)
 {
 	if(buff->contador == BUFSIZE)
   {
@@ -44,7 +44,7 @@ bool isFull(Buffer_Circ* buff)
  @param  data. Variable en la que se guarda el elemento obtenido
  @return int. 0 --> ejecucion sin errores ; -1 --> buffer vacio
 */
-int get_item(int* data, Buffer_Circ* buff )
+int get_item(int* data, Buffer_Circ_Measure * buff )
 {
 	if(isEmpty(buff))
   {
@@ -70,7 +70,7 @@ int get_item(int* data, Buffer_Circ* buff )
  @param  data. Variable con el elemento a introducir
  @return int. 0 --> ejecucion sin errores ; -1 --> buffer lleno
 */
-int put_item(int data, Buffer_Circ* buff )
+int put_item(int data, Buffer_Circ_Measure * buff )
 {
 	if(isFull(buff))
   {
@@ -95,7 +95,7 @@ int put_item(int data, Buffer_Circ* buff )
  @param  buff. Puntero al buffer circular que se comprueba
  @return int. Numero de elementos del buffer
 */
-int number(Buffer_Circ* buff)
+int number(Buffer_Circ_Measure * buff)
 {
 	return buff->contador;	
 }
@@ -105,7 +105,7 @@ int number(Buffer_Circ* buff)
  @param  buff. Puntero al buffer circular a listar
  @return int. 
 */
-int listBuffer(Buffer_Circ* buff)
+int listBuffer(Buffer_Circ_Measure * buff)
 {
 	Serial.printf("Tu buffer contiene: ");
 	for(int i=0; i<BUFSIZE; i++)
