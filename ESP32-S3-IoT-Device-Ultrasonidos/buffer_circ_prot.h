@@ -13,7 +13,7 @@
 #define T_espera 1000
 
 /**
- @brief  Buffer_Circ. Estructura para instanciar un buffer circular protegido
+ @struct Buffer_Circ. Estructura para instanciar un buffer circular protegido
  @member datos[BUFSIZE]. Vector de strings que almacena los datos del buffer
  @member bufIN. Posicion de entrada del proximo elemento
  @member bufOUT. Posicion de salida del proximo elemento 

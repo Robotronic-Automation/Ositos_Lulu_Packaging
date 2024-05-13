@@ -1,42 +1,37 @@
 /**
- @file s_setup.ino
-*/
+ * @file s_setup.ino
+ * @brief Añadir la configuración de pines, inicialización de variables, etc. 
+ */
 
 #include <string>
 
 #define SensorsUpdateInterval 1000 // 1 segundo de frecuencia de muestreo
 
-
 /**
- @brief  Buffer_Circ. Estructura para instanciar un buffer circular protegido
- @member datos[BUFSIZE]. Vector de strings que almacena los datos del buffer
- @member bufIN. Posicion de entrada del proximo elemento
- @member bufOUT. Posicion de salida del proximo elemento 
- @member contador. Variable que almacena el numero de elementos del buffer
- @member taskMux. Mutex para proteger el acceso a los elementos del buffer
-*/
+ * @brief  Estructura para instanciar un buffer circular protegido para mensajes y otro para medidas 
+ * @member Measure_buffer. Buffer para guardar medidas del sensor de ultrasonidos
+ * @member Message_buffer. Buffer para guardar los mensajes que se publicaran en el broker de MQTT
+ */
 typedef struct Buffers
 {
 	Buffer_Circ_Measure Measure_buffer;
   Buffer_Circ_Message Message_buffer;
 } Buffers;
 
-// creating a task handle
-TaskHandle_t Productor_Task, Consumidor_Task;
-TaskHandle_t GestorComMQTT_Task;
-// creating buffer circular protegido
-// Buffers[0] --> Measure_buffer
-// Buffers[1] --> Message_buffer
-//static Buffer_Circ_Measure Measure_buffer;
-//static Buffer_Circ_Message Message_buffer;
+// Crea un task handle para cada tarea 
+TaskHandle_t Productor_Task, Consumidor_Task, GestorComMQTT_Task;
+
+// Crea una instancia de la estructura buffers que contiene los buffers circulares protegidos
 static Buffers buffers;
-//void GestorComMQTT( void * parameter );
+
+// Declaracion de las funciones de cada tarea
+void GestorComMQTT( void * parameter );
 void Productor( void * parameter );
 void Consumidor( void * parameter );
 
 /**
- @brief on_setup. Añadir la configuración de pines, inicialización de variables, 
-        configurar interrupciones, crear tasks, etc
+ @brief on_setup. Configuración de pines, inicialización de variables, 
+        configuración de interrupciones y creación de tareas.
  @param  ninguno
  @return ninguno
 */
@@ -59,8 +54,6 @@ void on_setup()
     // Test JSON
     JsonDocument doc;
     doc["message"] = hello_msg;
-    //doc["luminosidad"] = 450;
-    //doc["temperatura"] = 21.5;
     String hello_msg_json;
     serializeJson(doc, hello_msg_json);
     enviarMensajePorTopic(HELLO_TOPIC, hello_msg_json);
@@ -75,28 +68,28 @@ void on_setup()
              "Productor",                   /* name of task. */
              10000,                         /* Stack size of task */
              &buffers.Measure_buffer,       /* parameter of the task */
-             1,                     /* priority of the task */
-             &Productor_Task,       /* Task handle to keep track of created task */
-             0);                    /* pin task to core 0 */
+             1,                             /* priority of the task */
+             &Productor_Task,               /* Task handle to keep track of created task */
+             0);                            /* pin task to core 0 */
 
     /* Create "Consumidor_Task" using the xTaskCreatePinnedToCore() function */
     xTaskCreatePinnedToCore(
-             Consumidor,            /* Task function. */
-             "Consumidor",          /* name of task. */
-             10000,                 /* Stack size of task */
-             &buffers,              /* parameter of the task */
-             1,                     /* priority of the task */
-             &Consumidor_Task,      /* Task handle to keep track of created task */
-             1);                    /* pin task to core 0 */
+             Consumidor,                    /* Task function. */
+             "Consumidor",                  /* name of task. */
+             10000,                         /* Stack size of task */
+             &buffers,                      /* parameter of the task */
+             1,                             /* priority of the task */
+             &Consumidor_Task,              /* Task handle to keep track of created task */
+             1);                            /* pin task to core 0 */
     
     // Create "GestorComMQTT_Task" using the xTaskCreatePinnedToCore() function 
     xTaskCreate(
-             GestorComMQTT,         /* Task function. */
-             "GestorComMQTT",       /* name of task. */
-             10000,                 /* Stack size of task */
+             GestorComMQTT,                 /* Task function. */
+             "GestorComMQTT",               /* name of task. */
+             10000,                         /* Stack size of task */
              &buffers.Message_buffer,       /* parameter of the task */
-             1,                     /* priority of the task */
-             &GestorComMQTT_Task);  /* Task handle to keep track of created task */
+             1,                             /* priority of the task */
+             &GestorComMQTT_Task);          /* Task handle to keep track of created task */
     
     delay(1000);
 
