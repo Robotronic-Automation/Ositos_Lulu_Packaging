@@ -16,7 +16,8 @@ void setColorLed(String status)
     digitalWrite( LED_VERDE, HIGH );
     digitalWrite( LED_AZUL, HIGH );
 
-  } else if ( status == "rojo" )
+  } 
+  else if ( status == "rojo" )
   {
 
     digitalWrite( LED_ROJO, HIGH );

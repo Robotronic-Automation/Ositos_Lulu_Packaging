@@ -38,8 +38,6 @@
 #define TOPIC_QR                  "A1/sensor/camara/qr/cinta/cajas"
 // TOPIC_COLOR : manda rojo si el delta está operando y verde si no
 #define TOPIC_COLOR               "A1/actuador/led/cinta/cajas/mitad"
-// TOPIC_COBOT_1 : el delta publica si esta operando?
-#define TOPIC_DELTA_1             "A1/robot/delta/cinta/cajas/mitad"
 
 // PINES
 // IO
