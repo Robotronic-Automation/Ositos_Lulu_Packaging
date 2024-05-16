@@ -8,7 +8,7 @@
 #include <Arduino.h>
 
 /**
- @struct  Button . Estructura para alamacenar el estado de un boton
+ @brief  Button . Estructura para alamacenar el estado de un boton
  @member PIN. Pin al que esta conectado el boton
  @member numberKeyPresses. Numero de veces que se presiona el boton
  @member pressed. Variable que indica si se ha presionado el boton 

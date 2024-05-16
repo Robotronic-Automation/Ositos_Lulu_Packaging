@@ -19,13 +19,9 @@
 #include <ArduinoJson.h>
 #include "button_interrupt.h"
 #include "buffer_circ_prot.h"
-#include "buffer_message.h"
 
 // Variable global para detener el programa en caso de emergencia
 volatile bool PARAR = false;
-// Mutex para acceder a esta variable
-portMUX_TYPE isrMux = portMUX_INITIALIZER_UNLOCKED;
-
 
 // ID de Dispositivo : se proporcionan varias alternativas, a modo de ejemplo
 String deviceID = String("giirobpr2-device-") + String(DEVICE_GIIROB_PR2_ID); 

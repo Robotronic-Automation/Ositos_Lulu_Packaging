@@ -19,8 +19,11 @@
 // WIFI
 //#define NET_SSID                  "UPV-PSK"
 //#define NET_PASSWD                "giirob-pr2-2023"
+//#define NET_SSID                    "topo1234"
+//#define NET_PASSWD                  "every7652"
 #define NET_SSID                    "topo1234"
 #define NET_PASSWD                  "every7652"
+
 
 // MQTT
 //#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"

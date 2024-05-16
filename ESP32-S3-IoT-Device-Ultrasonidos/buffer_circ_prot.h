@@ -13,40 +13,39 @@
 #define T_espera 1000
 
 /**
- @struct Buffer_Circ. Estructura para instanciar un buffer circular protegido
+ @brief  Buffer_Circ. Estructura para instanciar un buffer circular protegido
  @member datos[BUFSIZE]. Vector de strings que almacena los datos del buffer
  @member bufIN. Posicion de entrada del proximo elemento
  @member bufOUT. Posicion de salida del proximo elemento 
  @member contador. Variable que almacena el numero de elementos del buffer
  @member taskMux. Mutex para proteger el acceso a los elementos del buffer
 */
-typedef struct Buffer_Measure 
+typedef struct Buffer 
 {
 	int datos[BUFSIZE];
 	int bufIN = 0;
   int bufOUT = 0;
   int contador = 0;
   portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED;
-} Buffer_Circ_Measure;
-
+} Buffer_Circ;
 
 // Función para saber si el Buffer está vacío
-bool isEmpty(Buffer_Circ_Measure * buff);
+bool isEmpty(Buffer_Circ * buff);
 
 // Función para saber si el Buffer está lleno
-bool isFull(Buffer_Circ_Measure * buff);
+bool isFull(Buffer_Circ * buff);
 
 // Funcion para obtener elemento del Buffer
-int get_item(int * data, Buffer_Circ_Measure * buff );
+int get_item(int * data, Buffer_Circ * buff );
 
 // Función para introducir elemento en el Buffer
-int put_item(int data, Buffer_Circ_Measure * buff );
+int put_item(int data, Buffer_Circ * buff );
 
 // Función para saber cuántos elementos tiene el Buffer
-int number(Buffer_Circ_Measure * buff);
+int number(Buffer_Circ * buff);
 
 // Función para listar el contenido del Buffer
-int listBuffer(Buffer_Circ_Measure * buff);
+int listBuffer(Buffer_Circ * buff);
 
 #endif 
 

@@ -13,9 +13,7 @@ void IRAM_ATTR isr()
 {
   button1.numberKeyPresses += 1;
   button1.pressed = true;
-  //portENTER_CRITICAL (&(buff->isrMux));
   PARAR = true;
-  //portEXIT_CRITICAL (&(buff->isrMux)); 
 }
 
 /**
