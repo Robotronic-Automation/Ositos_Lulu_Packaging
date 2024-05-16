@@ -1,15 +1,16 @@
 /**
- @file buffer_circ_prot.ino
-*/
+ * @file  buffer_circ_prot.ino
+ * @brief Implementación de funciones para un buffer circular protegido
+ */
 
 #include "buffer_circ_prot.h"
 
 /**
- @brief isEmpty. Función para saber si el Buffer está vacío
- @param  buff. Puntero al buffer circular que se comprueba
- @return bool. true --> buffer vacio ; false --> buffer con elementos
-*/
-bool isEmpty(Buffer_Circ* buff)
+ * @brief  Comprueba si el buffer está vacío
+ * @param  buff. Puntero al buffer circular
+ * @return true si el buffer está vacío, false en caso contrario
+ */
+bool isEmpty(Buffer_Circ_Measure * buff)
 {
 	if(buff->contador == 0)
   {
@@ -22,11 +23,11 @@ bool isEmpty(Buffer_Circ* buff)
 }
 
 /**
- @brief isFull. Función para saber si el Buffer está lleno
- @param  buff. Puntero al buffer circular que se comprueba
- @return bool. true --> buffer lleno ; false --> buffer incompleto
-*/
-bool isFull(Buffer_Circ* buff)
+ * @brief  Comprueba si el buffer está lleno
+ * @param  buff. Puntero al buffer circular
+ * @return true si el buffer está lleno, false en caso contrario
+ */
+bool isFull(Buffer_Circ_Measure * buff)
 {
 	if(buff->contador == BUFSIZE)
   {
@@ -39,80 +40,93 @@ bool isFull(Buffer_Circ* buff)
 }
 
 /**
- @brief get_item. Funcion para obtener elemento del Buffer
- @param  buff. Puntero al buffer circular que se comprueba
- @param  data. Variable en la que se guarda el elemento obtenido
- @return int. 0 --> ejecucion sin errores ; -1 --> buffer vacio
-*/
-int get_item(int* data, Buffer_Circ* buff )
+ * @brief  Obtiene un elemento del buffer
+ * @param  buff. Puntero al buffer circular
+ * @param  data. Variable en la que se guarda el elemento obtenido
+ * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
+ */
+uint8_t get_item(uint32_t * data, Buffer_Circ_Measure * buff )
 {
 	if(isEmpty(buff))
   {
 		Serial.printf("Error: No hay datos en el vector\n"); 
+
 		return -1;
 	}
 	else
   {
-    portENTER_CRITICAL (&(buff->taskMux));
+    portENTER_CRITICAL (&(buff->taskMux)); // Entrar en la región crítica
 		*data = buff->datos[buff->bufOUT];
 		buff->contador--;
 		//Aritmetica en módulo del índice del vector
 		buff->bufOUT = (buff->bufOUT+1) % BUFSIZE;
-    portEXIT_CRITICAL (&(buff->taskMux)); 
-    //Serial.printf("Sacas dato de posicion %d\n",  buff->bufOUT);
+    portEXIT_CRITICAL (&(buff->taskMux)); // Salir de la región crítica
+
 		return 0;	
 	}
 }
 
 /**
- @brief put_item. Función para introducir elemento en el Buffer
- @param  buff. Puntero al buffer circular que se comprueba
- @param  data. Variable con el elemento a introducir
- @return int. 0 --> ejecucion sin errores ; -1 --> buffer lleno
-*/
-int put_item(int data, Buffer_Circ* buff )
+ * @brief  Inserta un elemento en el buffer
+ * @param  buff. Puntero al buffer circular
+ * @param  data. Elemento a introducir en el buffer
+ * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
+ */
+uint8_t put_item(uint32_t data, Buffer_Circ_Measure * buff )
 {
 	if(isFull(buff))
   {
 		Serial.printf("Error: El vector esta lleno\n"); 
+
 		return -1;
 	}
 	else
   {
-    portENTER_CRITICAL (&(buff->taskMux));
-		buff->datos[buff->bufIN]=data;
+    portENTER_CRITICAL (&(buff->taskMux)); // Entrar en la región crítica
+		buff->datos[buff->bufIN] = data; 
 		buff->contador++;
 		//Aritmetica en módulo del índice del vector
 		buff->bufIN = (buff->bufIN+1) % BUFSIZE;
-    portEXIT_CRITICAL (&(buff->taskMux)); 
-    //Serial.printf("Meto dato, en posicion %d\n", buff->bufIN);
+    portEXIT_CRITICAL (&(buff->taskMux)); // Salir de la región crítica
+
 		return 0;	
 	}	
 }
 
 /**
- @brief number. Función para saber cuántos elementos tiene el Buffer
- @param  buff. Puntero al buffer circular que se comprueba
- @return int. Numero de elementos del buffer
-*/
-int number(Buffer_Circ* buff)
+ * @brief  Obtiene el número de elementos en el buffer
+ * @param  buff. Puntero al buffer circular
+ * @return Número de elementos en el buffer
+ */
+uint32_t number(Buffer_Circ_Measure * buff)
 {
 	return buff->contador;	
 }
 
 /**
- @brief listBuffer. Función para listar el contenido del Buffer
- @param  buff. Puntero al buffer circular a listar
- @return int. 
-*/
-int listBuffer(Buffer_Circ* buff)
+ * @brief  Lista el contenido del buffer
+ * @param  buff. Puntero al buffer circular
+ * @return 0 si se lista correctamente, -1 si el buffer está vacío
+ */
+uint8_t listBuffer(Buffer_Circ_Measure * buff)
 {
-	Serial.printf("Tu buffer contiene: ");
-	for(int i=0; i<BUFSIZE; i++)
+  if(isEmpty(buff))
   {
-		Serial.printf("\t%d", buff->datos[i]);
+		Serial.printf("Error: No hay datos en el vector\n"); 
+
+		return -1;
 	}
-	Serial.printf("\n");
+	else
+  {
+    Serial.printf("Tu buffer contiene: ");
+    for(uint32_t i = 0; i < BUFSIZE; i++)
+    {
+      Serial.printf("\t%d", buff->datos[i]);
+    }
+    Serial.printf("\n");
+
+    return 0;
+  }
 }
 
 /*** End of file ****/

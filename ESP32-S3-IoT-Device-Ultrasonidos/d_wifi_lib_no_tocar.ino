@@ -1,36 +1,43 @@
 /**
- @file d_wifi_lib_no_tocar.ino
-*/
+ * @file d_wifi_lib_no_tocar.ino
+ * @brief Archivo que contiene funciones para la gestión de la conexión WiFi
+ */
 
 #define WIFI_CONNECTION_TIMEOUT_SECONDS 15
 
 // Usamos comunicaciones TLS/SSL si se define el certificado raíz CA
 #ifdef SSL_ROOT_CA
-  WiFiClientSecure espWifiClient;
+  WiFiClientSecure espWifiClient; ///< Cliente WiFi para conexiones seguras
 #else
-  WiFiClient espWifiClient;
+  WiFiClient espWifiClient; ///< Cliente WiFi para conexiones no seguras
 #endif
 
-const char* wifiSSID = NET_SSID;
-const char* wifiPasswd = NET_PASSWD;
+const char* wifiSSID = NET_SSID; ///< SSID de la red WiFi
+const char* wifiPasswd = NET_PASSWD; ///< Contraseña de la red WiFi
 
+/**
+ * @brief Función para gestionar la conexión WiFi en el loop
+ */
 void wifi_loop() 
 {
   if ( !WiFi.isConnected() )
     wifi_reconnect(WIFI_CONNECTION_TIMEOUT_SECONDS);
 }
 
+/**
+ * @brief Función para establecer la conexión WiFi
+ */
 void wifi_connect() 
 {
 
   delay(10);
 
-  WiFi.mode(WIFI_STA); //Optional
+  WiFi.mode(WIFI_STA); //Opcional
   trace("MAC Address: ");
   traceln(WiFi.macAddress());
 
 #ifdef SSL_ROOT_CA
-  // Set Root CA certificate
+  // Establecer certificado raíz CA
   espWifiClient.setCACert(SSL_ROOT_CA);
   traceln("Enabling TLS/SSL Communications ...");
 #endif
@@ -45,6 +52,10 @@ void wifi_connect()
 
 }
 
+/**
+ * @brief Función para reconectar WiFi si se desconecta
+ * @param retries. Número de intentos de conexión
+ */
 void wifi_reconnect(uint retries) 
 {
 

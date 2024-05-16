@@ -1,6 +1,6 @@
 /**
- @file c_logger.ino
-*/
+ *@file c_logger.ino
+ */
 
 // LOGGING
 #define TRACE 6

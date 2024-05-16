@@ -1,63 +1,78 @@
 /**
  * @file buffer_message.h
+ * @brief Definiciones y prototipos de funciones relacionadas con el buffer circular para mensajes
  */
 
 #ifndef BUFFER_MESSAGE_H
 #define BUFFER_MESSAGE_H
 
-#include "src/quirc/quirc.h"
-#define BUFSIZE 10
-#define true 1
-#define false 0
+#include "src/quirc/quirc.h" // Inclusión de la librería Quirc
+#define BUFSIZE 10 ///< Tamaño del buffer
+#define true 1 ///< Valor booleano verdadero
+#define false 0 ///< Valor booleano falso
 
-#define T_espera 1000
+#define T_espera 1000 ///< Tiempo de espera predeterminado
 
 /**
- * @struct  Buffer_Circ. Estructura para instanciar un buffer circular protegido
- * @member datos[BUFSIZE]. Vector de strings que almacena los datos del buffer
- * @member bufIN. Posicion de entrada del proximo elemento
- * @member bufOUT. Posicion de salida del proximo elemento 
- * @member contador. Variable que almacena el numero de elementos del buffer
- * @member taskMux. Mutex para proteger el acceso a los elementos del buffer
+ * @struct  Buffer_Circ_Message
+ * @brief   Estructura para instanciar un buffer circular protegido de mensajes
+ * @details Almacena los datos del buffer, la posición de entrada y salida,
+ *          el contador de elementos y el mutex para proteger el acceso
  */
 typedef struct Buffer_Message 
 {
-	char datos[10][BUFSIZE];
-	int bufIN = 0;
-  int bufOUT = 0;
-  int contador = 0;
-  portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED;
+	char datos[10][BUFSIZE]; ///< Vector de cadenas de caracteres que almacena los datos del buffer
+	uint32_t bufIN = 0; ///< Posición de entrada del próximo elemento
+  uint32_t bufOUT = 0; ///< Posición de salida del próximo elemento 
+  uint32_t contador = 0; ///< Número de elementos en el buffer
+  portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED; ///< Mutex para proteger el acceso al buffer
 } Buffer_Circ_Message;
 
+// Funciones para el manejo del buffer circular protegido
+
 /**
- * @fn Función para saber si el Buffer está vacío
+ * @brief  Comprueba si el buffer está vacío
+ * @param  buff. Puntero al buffer circular
+ * @return true si el buffer está vacío, false en caso contrario
  */
 bool isEmpty(Buffer_Circ_Message * buff);
 
 /**
- * @fn Función para saber si el Buffer está lleno
+ * @brief  Comprueba si el buffer está lleno
+ * @param  buff. Puntero al buffer circular
+ * @return true si el buffer está lleno, false en caso contrario
  */
 bool isFull(Buffer_Circ_Message * buff);
 
 /**
- * @fn Funcion para obtener elemento del Buffer
+ * @brief Obtiene un elemento del buffer
+ * @param data. Puntero al elemento donde se almacenará el dato
+ * @param buff. Puntero al buffer circular
+ * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
  */
-int get_item(char data[], Buffer_Circ_Message * buff );
+uint8_t get_item(char data[], Buffer_Circ_Message * buff );
 
 /**
- * @fn Función para introducir elemento en el Buffer
+ * @brief Inserta un elemento en el buffer
+ * @param data. Dato a insertar en el buffer
+ * @param buff. Puntero al buffer circular
+ * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
  */
-int put_item(char data[], Buffer_Circ_Message * buff );
+uint8_t put_item(char data[], Buffer_Circ_Message * buff );
 
 /**
- * @fn Función para saber cuántos elementos tiene el Buffer
+ * @brief Obtiene el número de elementos en el buffer
+ * @param buff. Puntero al buffer circular
+ * @return Número de elementos en el buffer
  */
-int number(Buffer_Circ_Message * buff);
+uint32_t number(Buffer_Circ_Message * buff);
 
 /**
- * @fn Función para listar el contenido del Buffer
+ * @brief Lista el contenido del buffer
+ * @param buff Puntero al buffer circular
+ * @return 0 si se lista correctamente, -1 si el buffer está vacío
  */
-int listBuffer(Buffer_Circ_Message * buff);
+uint8_t listBuffer(Buffer_Circ_Message * buff);
 
 #endif 
 

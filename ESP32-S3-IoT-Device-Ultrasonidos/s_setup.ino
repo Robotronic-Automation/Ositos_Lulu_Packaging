@@ -1,201 +1,287 @@
 /**
- @file s_setup.ino
-*/
+ * @file s_setup.ino
+ * @brief Configuración de pines, inicialización de variables y creación de tareas
+ */
 
 #include <string>
 
-#define SensorsUpdateInterval 1000 // 1 segundo de frecuencia de muestreo
-
-// creating a task handle
-TaskHandle_t Productor_Task, Consumidor_Task;
-//TaskHandle_t GestorComMQTT_Task;
-// creating buffer circular protegido
-// Buffers[0] --> Measure_buffer
-// Buffers[1] --> Message_buffer
-//static Buffer_Circ Buffers[2]; 
-static Buffer_Circ Measure_buffer;
-//static Buffer_Circ Message_buffer;
-
-//void GestorComMQTT( void * parameter );
-void Productor( void * parameter );
-void Consumidor( void * parameter );
+#define SensorsUpdateInterval 500 ///< Frecuencia de muestreo en milisegundos (1 segundo)
 
 /**
- @brief on_setup. Añadir la configuración de pines, inicialización de variables, 
-        configurar interrupciones, crear tasks, etc
- @param  ninguno
- @return ninguno
-*/
+ * @brief  Estructura para instanciar buffers circulares protegidos para medidas y mensajes
+ * @member Measure_buffer. Buffer para almacenar medidas del sensor de ultrasonidos
+ * @member Message_buffer. Buffer para almacenar mensajes a publicar en el broker MQTT
+ * @member Color_buffer. Buffer para almacenar el color del LED
+ */
+typedef struct Buffers
+{
+	Buffer_Circ_Measure Measure_buffer;
+  Buffer_Circ_Message Message_buffer;
+  Buffer_Circ_Message Color_buffer;
+
+} Buffers;
+
+// Crea un task handle para cada tarea 
+TaskHandle_t Ultrasonidos_Task_Handle, Controlador_Task_Handle, GestorComMQTT_Task_Handle;
+TaskHandle_t Led_Task_Handle;
+
+// Instancia de estructura Buffers que contiene buffers circulares protegidos
+static Buffers buffers;
+
+//const byte chns[] = {0, 1, 2};        //define the pwm channels
+
+// Declaración de funciones de cada tarea
+void GestorComMQTT_Task( void * parameter );
+void Ultrasonidos_Task( void * parameter );
+void Controlador_Task( void * parameter );
+void Led_Task( void * parameter );
+
+/**
+ * @brief on_setup. Configuración de pines, inicialización de variables y creación de tareas
+ */
 void on_setup() 
 {
 
-    // initialize digital pin LED_BUILTIN as an output.
+    // Inicializacion de pines 
     pinMode(LED_ROJO, OUTPUT);
     pinMode(LED_VERDE, OUTPUT);
     pinMode(LED_AZUL, OUTPUT);
+    pinMode(TRIGGER_PIN_ULTRASONIDOS, OUTPUT);  // Trigger como salida
+    pinMode(ECHO_PIN_ULTRASONIDOS, INPUT);      // Echo como entrada
+    // ledcSetup(chns[0], 1000, 8); 
+    // ledcAttachPin(LED_ROJO, chns[0]);
+    // ledcSetup(chns[1], 1000, 8); 
+    // ledcAttachPin(LED_VERDE, chns[1]);
+    // ledcSetup(chns[2], 1000, 8); 
+    // ledcAttachPin(LED_AZUL, chns[2]);
 
-    // Inicializa los pines del ultrasonidos: 
-    // trigger --> output  ;  echo --> input
-    pinMode(TRIGGER_PIN_ULTRASONIDOS, OUTPUT);
-    pinMode(ECHO_PIN_ULTRASONIDOS, INPUT);
+    // Configurar interrupción con el botón
+    config_button();
 
-    // Mensaje para comprobar la conexion MQTT
-    String hello_msg = String("Hola Mundo! Desde dispositivo ") + deviceID;
+    // Mensaje de prueba para comprobar la conexión MQTT
+    String hello_msg = String("¡Hola Mundo! Desde dispositivo ") + deviceID;
 
-    // Test JSON
+    // Generar documento JSON con el mensaje y enviar por MQTT
     JsonDocument doc;
     doc["message"] = hello_msg;
-    //doc["luminosidad"] = 450;
-    //doc["temperatura"] = 21.5;
     String hello_msg_json;
     serializeJson(doc, hello_msg_json);
     enviarMensajePorTopic(HELLO_TOPIC, hello_msg_json);
-    
 
-    // Configuramos interrupcion con el boton
-    config_button();
-
-    /* Create "Productor_Task" using the xTaskCreatePinnedToCore() function */
+    /* Crear "Ultrasonidos_Task" */
     xTaskCreatePinnedToCore(
-             Productor,             /* Task function. */
-             "Productor",           /* name of task. */
-             10000,                 /* Stack size of task */
-             &Measure_buffer,       /* parameter of the task */
-             1,                     /* priority of the task */
-             &Productor_Task,       /* Task handle to keep track of created task */
-             0);                    /* pin task to core 0 */
+             Ultrasonidos_Task,             /* Task function. */
+             "Ultrasonidos_Task",           /* name of task. */
+             10000,                         /* Stack size of task */
+             &buffers.Measure_buffer,       /* parameter of the task */
+             1,                             /* priority of the task */
+             &Ultrasonidos_Task_Handle,     /* Task handle to keep track of created task */
+             0);                            /* pin task to core 0 */
 
-    /* Create "Consumidor_Task" using the xTaskCreatePinnedToCore() function */
+    /* Crear "Controlador_Task" */
     xTaskCreatePinnedToCore(
-             Consumidor,            /* Task function. */
-             "Consumidor",          /* name of task. */
-             10000,                 /* Stack size of task */
-             &Measure_buffer,       /* parameter of the task */
-             1,                     /* priority of the task */
-             &Consumidor_Task,      /* Task handle to keep track of created task */
-             1);                    /* pin task to core 0 */
+             Controlador_Task,              /* Task function. */
+             "Controlador_Task",            /* name of task. */
+             10000,                         /* Stack size of task */
+             &buffers,                      /* parameter of the task */
+             1,                             /* priority of the task */
+             &Controlador_Task_Handle,      /* Task handle to keep track of created task */
+             1);                            /* pin task to core 0 */
     
-    // Create "GestorComMQTT_Task" using the xTaskCreatePinnedToCore() function 
-    //xTaskCreate(
-    //         GestorComMQTT,         /* Task function. */
-    //         "GestorComMQTT",       /* name of task. */
-    //         10000,                 /* Stack size of task */
-    //         &Measure_buffer,       /* parameter of the task */
-    //         1,                     /* priority of the task */
-    //         &GestorComMQTT_Task);  /* Task handle to keep track of created task */
+    /* Crear "GestorComMQTT_Task" */
+    xTaskCreate(
+             GestorComMQTT_Task,            /* Task function. */
+             "GestorComMQTT_Task",          /* name of task. */
+             10000,                         /* Stack size of task */
+             &buffers.Message_buffer,       /* parameter of the task */
+             1,                             /* priority of the task */
+             &GestorComMQTT_Task_Handle);   /* Task handle to keep track of created task */
     
+    /* Crear "Led_Task" */
+    xTaskCreate(
+             Led_Task,                    /* Task function. */
+             "Led_Task",                  /* Name of task. */
+             10000,                       /* Stack size of task */
+             &buffers.Color_buffer,       /* Parameter of the task */
+             1,                           /* Priority of the task */
+             &Led_Task_Handle);           /* Task handle to keep track of created task */
+
     delay(1000);
 
 }
 
 /**
- @brief Productor. Tarea para tomar mediciones del sensor ultrasonidos
- @param buff_prod. Buffer donde se almacenan las medidas
-*/
-void Productor( void * parameter )
+ * @brief Tarea para tomar mediciones del sensor de ultrasonidos
+ * @param parameter. Puntero al buffer donde se almacenan las medidas
+ */
+void Ultrasonidos_Task( void * parameter )
 {
   TickType_t xLastWakeTime;
-  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
-  Serial.printf("Hola desde la tarea 1 en el Core %d\n", xPortGetCoreID());
+  Buffer_Circ_Measure * buff = (Buffer_Circ_Measure *) parameter;
+
+  // Inicialización del tiempo de espera para la tarea periódica.
   xLastWakeTime = xTaskGetTickCount();
+
+  Serial.printf("Hola desde la tarea Ultrasonidos_Task en el Core %d\n", xPortGetCoreID());
+
+  // Bucle principal de la tarea
   while (!PARAR)
   {
-    // Leemos sensor ultrasonidos y guardamos distancia
-    int cm = ping(TRIGGER_PIN_ULTRASONIDOS, ECHO_PIN_ULTRASONIDOS);
-    if(put_item(cm, &buff_prod[0]) == -1)
+    // Leer el sensor de ultrasonidos y guardar la distancia
+    uint32_t cm = ping(TRIGGER_PIN_ULTRASONIDOS, ECHO_PIN_ULTRASONIDOS);
+    if(put_item(cm, buff) == -1)
     {
-        // si el buffer esta lleno y no puedo insertar dato...
+        // Manejo de la situación en la que el buffer está lleno
+        // En esta situación, el dato no se puede insertar en el buffer
     }
     else
     {
-      //Serial.printf("Inserto dato %d\n", cm);
+        // El dato se ha insertado correctamente en el buffer
+        // Serial.printf("Inserto dato %d\n", cm);
     }
-    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS) );
+
+    // Espera hasta el próximo intervalo de tiempo
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval / portTICK_PERIOD_MS) );
+
   }
-    Serial.println("Finalizando tarea 1");
-    vTaskDelete( NULL );
+
+  // Tarea finalizada
+  Serial.println("Finalizando tarea Ultrasonidos_Task");
+  vTaskDelete( NULL );
     
 }
 
 /**
- @brief Consumidor. Tarea para interpretar mediciones del sensor y tomar acciones 
- @param buff_prod. Buffer donde se obtienen las medidas
-*/
-void Consumidor( void * parameter )
+ * @brief Tarea para interpretar mediciones del sensor y tomar acciones en función de ellas
+ * @param parameter. Puntero a la estructura de buffers que contiene las medidas y mensajes
+ */
+void Controlador_Task( void * parameter )
 {
-  int cm;
+  uint32_t cm;
   TickType_t xLastWakeTime;
-  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
-  Serial.printf("Hola desde la tarea 2 en el Core %d\n", xPortGetCoreID());
+  Buffers * buffers = (Buffers *) parameter;
+
+  // Inicialización del tiempo de espera para la tarea periódica.
   xLastWakeTime = xTaskGetTickCount();
+
+  Serial.printf("Hola desde la tarea Controlador_Task en el Core %d\n", xPortGetCoreID());
+  
+  // Bucle principal de la tarea
   while (!PARAR)
   {
-    if(get_item(&cm, &buff_prod[0]) == 0)
+    // Obtenemos la medida del buffer
+    if(get_item(&cm, &(buffers->Measure_buffer)) == 0)
     {
-      // Si he podido obtener dato...
-      //Serial.printf("saco dato %d\n", cm);
-      // Asignamos mensaje segun la distancia
-      String value;
+      // Si se ha obtenido la medida correctamente...  
+      // Asignamos un mensaje según la distancia medida
+      char value[10];
       if( cm <= 25 )
       {
-        value = "detectado";
+        strcpy(value, "detect");
+        put_item("rojo", &(buffers->Color_buffer));
+        // Acciones a tomar cuando se detecta un objeto cerca...
         // Parar el motor dc de la cinta...
       }
       else 
       {
-        value = "libre";
+        strcpy(value, "libre");
+        put_item("verde", &(buffers->Color_buffer));
+        // Acciones a tomar cuando no se detecta ningún objeto cercano...
         // Reactivar motor dc de la cinta...
       }
 
-      // Hacemos documento de json con el mensaje y enviamos por topic
-      JsonDocument doc;
-      doc["presencia"] = value;
-      String ULTRASONIDOS_msg_json;
-      serializeJson(doc, ULTRASONIDOS_msg_json);
-      enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
+      // Insertamos el mensaje en el buffer correspondiente
+      put_item(value, &(buffers->Message_buffer));
+     
     } 
  
+    // Espera hasta el próximo intervalo de tiempo
     vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
     
   }
-  Serial.println("Finalizando tarea 2");
+
+  // Tarea finalizada
+  Serial.println("Finalizando tarea Controlador_Task");
   vTaskDelete( NULL );
+
 }
 
 /**
- @brief GestorComMQTT. Tarea para gestionar comunicaciones con el broker MQTT
- @param buff_prod. Buffer donde se obtienen los mensajes
-*/
-/*
-void GestorComMQTT( void * parameter )
+ * @brief Tarea para gestionar las comunicaciones con el broker MQTT
+ * @param parameter. Puntero al buffer donde se obtienen los mensajes para enviarlos por MQTT
+ */
+void GestorComMQTT_Task( void * parameter )
 {
-  String msg;
+  char msg[10];
   TickType_t xLastWakeTime;
-  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
-  Serial.printf("Hola desde la tarea 2 en el Core %d\n", xPortGetCoreID());
+  Buffer_Circ_Message * buff = (Buffer_Circ_Message *) parameter;
+
+  // Inicialización del tiempo de espera para la tarea periódica
   xLastWakeTime = xTaskGetTickCount();
+
+  Serial.printf("Hola desde la tarea GestorComMQTT_Task en el Core %d\n", xPortGetCoreID());
+  
+  // Bucle principal de la tarea
   while (!PARAR)
   {
-    if(get_item(msg, buff_prod) == 0)
+    // Obtenemos un mensaje del buffer
+    if(get_item(msg, buff) == 0)
     {
-      // Si he podido obtener dato...
-      //Serial.printf("saco dato %d\n", cm);
-      // Asignamos mensaje segun la distancia
-      
-      // Hacemos documento de json con el mensaje y enviamos por topic
+      // Si se ha obtenido el mensaje correctamente...
+      // Convertimos el mensaje en formato JSON y lo enviamos por el topic correspondiente
       JsonDocument doc;
-      doc["presencia"] = value;
+      doc["presencia"] = msg;
       String ULTRASONIDOS_msg_json;
       serializeJson(doc, ULTRASONIDOS_msg_json);
       enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
     } 
  
-    //vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    // Espera hasta el próximo intervalo de tiempo
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS) );
     
   }
-  Serial.println("Finalizando tarea 2");
+
+  // Tarea finalizada
+  Serial.println("Finalizando tarea GestorComMQTT_Task");
   vTaskDelete( NULL );
+
 }
-*/
+
+/**
+ * @brief Tarea para encender el LED según se haya realizado la lectura de un código QR o no
+ * @param parameter Puntero al buffer donde se obtiene el color del LED
+ */
+void Led_Task( void * parameter)
+{
+  char color[10];
+  TickType_t xLastWakeTime;
+  Buffer_Circ_Message * buff = (Buffer_Circ_Message *) parameter;
+
+  // Inicialización del tiempo de espera para la tarea periódica
+  xLastWakeTime = xTaskGetTickCount();
+
+  // Mensaje de inicio de la tarea
+  Serial.printf("Hola desde la tarea Led_Task en el Core %d\n", xPortGetCoreID());
+
+  // Bucle principal de la tarea
+  while (!PARAR)
+  {
+    // Intenta obtener un color del buffer
+    if(get_item(color, buff) == 0)
+    {
+      // Si se ha obtenido el color correctamente, establece el color del LED
+      setColorLed((const char *)color);
+    } 
+
+    // Espera hasta el próximo intervalo de tiempo
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval / portTICK_PERIOD_MS) );
+    
+  }
+
+  // Tarea finalizada
+  Serial.println("Finalizando tarea Led_Task");
+  vTaskDelete( NULL );
+
+}
 
 /*** End of file ****/

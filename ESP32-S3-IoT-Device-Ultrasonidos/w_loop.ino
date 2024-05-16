@@ -1,33 +1,55 @@
 /**
- @file w_loop.ino
-*/
+ * @file  w_loop.ino
+ * @brief Archivo que contiene la implementación de las tareas a realizar
+ *        dentro del ciclo principal
+ */
 
 #include <string>
 
 /**
- @brief on_loop. Funcion con las tareas a realizar dentro del 'loop'
- @param  ninguno
- @return ninguno
-*/
+ * @brief Función que define las tareas a realizar dentro del ciclo principal (loop)
+ */
 void on_loop() 
 {
- // put your main code here, to run repeatedly:
+  // Mensaje de inicio del ciclo principal
   Serial.println("Inicio Main");
+
+  // Bucle principal
   while (!PARAR)
   {
-    if (button1.pressed) {
-      Serial.printf("El botón se ha pulsado %u veces\n", button1.numberKeyPresses);
-      digitalWrite( LED_1, HIGH );
-      digitalWrite( LED_2, HIGH );
+    // Verifica si el botón ha sido pulsado
+    if (button1.pressed) 
+    {
+      
+      // Restablece el estado del botón pulsado
       button1.pressed = false;
+
     }
+
+    // Breve retraso para evitar bucle de lecturas intensivas
     delay(100);
   }
-  Serial.println("CERRANDO");
-  delay(3000);
-  Serial.println("FIN Main");
-  exit(0);
 
+  
+  // Enciende ambos LEDs
+  digitalWrite( LED_VERDE, HIGH );
+  digitalWrite( LED_ROJO, HIGH );
+
+  // Mensaje de cierre del ciclo principal
+  Serial.println("CERRANDO");
+
+  // Breve retraso antes de finalizar
+  delay(3000);
+
+  // Apaga ambos LEDs
+  digitalWrite( LED_VERDE, LOW );
+  digitalWrite( LED_ROJO, LOW );
+
+  // Mensaje de finalización del ciclo principal
+  Serial.println("FIN Main");
+
+  // Finaliza el programa
+  exit(0);
 }
 
 /*** End of file ****/

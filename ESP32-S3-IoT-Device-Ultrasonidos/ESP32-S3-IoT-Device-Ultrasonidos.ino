@@ -1,14 +1,14 @@
-/*
- * Grado GIIROB
- * Asignatura PR2
- * Grupo A1
- * Curso 2023/24
+/**
+ * Grado en Informatica Industrial y Robótica (GIIROB)
+ * Asignatura: PR2
+ * Grupo: A1
+ * Curso: 2023/24
  *
- * @file Plantilla Dispositivo IoT
+ * @file ESP32-S3-IoT-Device-Ultrasonidos.ino
  *
  * Control de versiones
- * Version: 0.1   (2024/04/15) Prototipo inicial
-*/
+ * Version: 0.1   (2024/05/16) Prototipo sin motor DC
+ */
 #include "Config.h"
 
 #include <WiFi.h>
@@ -19,9 +19,13 @@
 #include <ArduinoJson.h>
 #include "button_interrupt.h"
 #include "buffer_circ_prot.h"
+#include "buffer_message.h"
 
 // Variable global para detener el programa en caso de emergencia
 volatile bool PARAR = false;
+// Mutex para acceder a esta variable
+portMUX_TYPE isrMux = portMUX_INITIALIZER_UNLOCKED;
+
 
 // ID de Dispositivo : se proporcionan varias alternativas, a modo de ejemplo
 String deviceID = String("giirobpr2-device-") + String(DEVICE_GIIROB_PR2_ID); 
@@ -32,11 +36,12 @@ String deviceID = String("giirobpr2-device-") + String(DEVICE_GIIROB_PR2_ID);
   // Versión usando el ID de ESP del dispositivo
 
 /**
- @brief setup. Configura conceptos 'core', inicializa la wifi y la conexión con 
-        el bróker MQTT, se suscribe a topics, y llama a on_setup. 
- @param  ninguno
- @return ninguno
-*/
+ * @brief  Configuración inicial del programa. Configura conceptos 'core',
+ *         inicializa la conexión WiFi y la conexión con el bróker MQTT,
+ *         se suscribe a topics y llama a on_setup.
+ * @param  ninguno
+ * @return ninguno
+ */
 void setup() 
 {
   // Este setup 
@@ -60,19 +65,29 @@ void setup()
   // Nos conectamos al broker MQTT, indicando un 'client-id'
   mqtt_connect(deviceID);
 
+  // Suscribimos al dispositivo a los topics MQTT relevantes
   suscribirseATopics();
 
+  // Configuración adicional específica del dispositivo
   on_setup();
 
 }
 
+/**
+ * @brief  Bucle principal del programa. Gestiona las tareas repetitivas
+ *         como la conexión WiFi, la conexión MQTT y las acciones definidas
+ *         en on_loop
+ * @param  ninguno
+ * @return ninguno
+ */
 void loop() 
 {
 
-  // NO QUITAR (jjfons)
-  wifi_loop();
-  mqtt_loop();
+  // Tareas repetitivas
+  wifi_loop(); // Gestión de la conexión WiFi
+  mqtt_loop(); // Gestión de la conexión MQTT
 
+  // Tareas específicas del dispositivo definidas en on_loop
   on_loop();
 }
 

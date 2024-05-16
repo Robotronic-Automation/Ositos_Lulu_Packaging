@@ -1,32 +1,35 @@
 /**
- @file button_interrupt.ino
-*/
+ * @file button_interrupt.ino
+ * @brief Implementación de funciones para gestionar un botón con interrupción
+ */
 
 #include "button_interrupt.h"
 
 /**
- @brief isr. Funcion para gestion de la interrupcion
- @param  ninguno
- @return ninguno
-*/
+ * @brief   Función de la rutina de interrupción
+ * @details Establece el indicador de botón presionado
+ */
 void IRAM_ATTR isr() 
 {
-  button1.numberKeyPresses += 1;
   button1.pressed = true;
-  PARAR = true;
+  PARAR = true; // Activa la variable global para detener el programa en caso de emergencia
 }
 
 /**
- @brief isr. Funcion para configurar la interrupcion
- @param  ninguno
- @return ninguno
-*/
+ * @brief   Función para configurar la interrupción del botón
+ * @details Configura el pin conectado al botón como entrada pull-up y
+ *          asigna la rutina de servicio 'isr' para la interrupción
+ *          cuando se produce un flanco de bajada
+ */
 void config_button()
 {
-  // initialize digital pin LED_BUILTIN as an output.
-  pinMode(LED_1, OUTPUT);
-  pinMode(LED_2, OUTPUT);
+  // Configurar el pin conectado al botón como entrada pull-up
   pinMode(button1.PIN, INPUT_PULLUP);
+
+  /* 
+   * Asignar la rutina de servicio 'isr' para la interrupción  
+   * cuando se produce un flanco de bajada
+   */
   attachInterrupt(button1.PIN, isr, FALLING);
 }
 
