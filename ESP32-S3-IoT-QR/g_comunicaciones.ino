@@ -1,40 +1,35 @@
 /**
- @file g_comunicaciones.ino
-*/
+ * @file  g_comunicaciones.ino
+ * @brief Implementación de funciones para la gestión de comunicaciones MQTT
+ */
 
 /**
- @brief suscribirseATopics. Se suscribe a los topics MQTT para recibir mensajes
- @param  ninguno
- @return ninguno
-*/
+ * @brief Se suscribe a los topics MQTT para recibir mensajes.
+ */
 void suscribirseATopics() 
 {
-  
-  mqtt_subscribe(TOPIC_COLOR);
-
+  mqtt_subscribe(TOPIC_COLOR); // Suscribirse al topic de color
 }
 
 /**
- @brief alRecibirMensajePorTopic. Controlador que gestiona la recepción de datos
- @param  topic. topic del que recibe el mensaje
- @param  incomingMessage. mensaje que se recibe
- @return ninguno
-*/
-void alRecibirMensajePorTopic(char* topic, String incomingMessage)
+ * @brief Controlador que gestiona la recepción de datos por topic MQTT
+ * @param topic. Topic del que se recibe el mensaje
+ * @param incomingMessage. Mensaje recibido
+ */
+void alRecibirMensajePorTopic(char * topic, String incomingMessage)
 {
   
-  // Test JSON
+  // Parsear el mensaje JSON recibido
   JsonDocument doc;
-   // Parse the JSON input
   DeserializationError err = deserializeJson(doc, incomingMessage);
-  // Parsing succeeded?
   if (err) 
   {
-    warn(F("deserializeJson() returned ")); warnln(err.f_str());
+    warn(F("deserializeJson() returned ")); 
+    warnln(err.f_str());
     return;
   }
 
-  const char* msg;
+  const char * msg;
   //info("(JSON) Rebut musica: "); infoln(msg);
 
   /*int lum = doc["luminosidad"];
@@ -47,26 +42,25 @@ void alRecibirMensajePorTopic(char* topic, String incomingMessage)
 
 
   // If a message is received on the topic ...
-  if (strcmp(topic, TOPIC_COLOR) == 0) 
+  if ( strcmp(topic, TOPIC_COLOR) == 0 ) 
   {
+    // Extraer el campo "color_estado" del mensaje JSON
     msg = doc["color_estado"];
     infoln(msg);
+    // Llamar a la función para establecer el color del LED
     setColorLed(msg);
   }
-
+  
 }
 
 /**
- @brief enviarMensajePorTopic. Controlador que gestiona la recepción de datos
- @param  topic. topic en el que publica 
- @param  outgoingMessage. mensaje que se publica
- @return ninguno
-*/
-void enviarMensajePorTopic(const char* topic, String outgoingMessage) 
+ * @brief Controlador que envía un mensaje por un topic MQTT
+ * @param topic. Topic en el que se publica el mensaje
+ * @param outgoingMessage. Mensaje a publicar
+ */
+void enviarMensajePorTopic(const char * topic, String outgoingMessage) 
 {
-
-  mqtt_publish(topic, outgoingMessage.c_str());
-
+  mqtt_publish(topic, outgoingMessage.c_str()); // Publicar el mensaje en el topic especificado
 }
 
 /*** End of file ****/

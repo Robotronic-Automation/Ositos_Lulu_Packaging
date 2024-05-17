@@ -43,10 +43,8 @@
 // IO
 #define LED_ROJO                  2  // Pin rojo led RGB
 #define LED_VERDE                 3  // Pin verde led RGB
-#define LED_AZUL                  46  // Pin azul led RGB
+//#define LED_AZUL                  35  // Pin verde led RGB
 // INTERRUPCION BOTON
-#define LED_1  2
-#define LED_2  3
 #define PIN_BUTTON 20
 
 #endif

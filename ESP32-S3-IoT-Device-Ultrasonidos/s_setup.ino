@@ -28,7 +28,6 @@ TaskHandle_t Led_Task_Handle;
 // Instancia de estructura Buffers que contiene buffers circulares protegidos
 static Buffers buffers;
 
-//const byte chns[] = {0, 1, 2};        //define the pwm channels
 
 // Declaración de funciones de cada tarea
 void GestorComMQTT_Task( void * parameter );
@@ -48,12 +47,7 @@ void on_setup()
     pinMode(LED_AZUL, OUTPUT);
     pinMode(TRIGGER_PIN_ULTRASONIDOS, OUTPUT);  // Trigger como salida
     pinMode(ECHO_PIN_ULTRASONIDOS, INPUT);      // Echo como entrada
-    // ledcSetup(chns[0], 1000, 8); 
-    // ledcAttachPin(LED_ROJO, chns[0]);
-    // ledcSetup(chns[1], 1000, 8); 
-    // ledcAttachPin(LED_VERDE, chns[1]);
-    // ledcSetup(chns[2], 1000, 8); 
-    // ledcAttachPin(LED_AZUL, chns[2]);
+ 
 
     // Configurar interrupción con el botón
     config_button();
@@ -230,12 +224,16 @@ void GestorComMQTT_Task( void * parameter )
     if(get_item(&msg_to_publish, buff) == 0)
     {
       // Si se ha obtenido el mensaje correctamente...
-      // Convertimos el mensaje en formato JSON y lo enviamos por el topic correspondiente
-      JsonDocument doc;
-      doc["presencia"] = msg_to_publish.msg;
-      String msg_json;
-      serializeJson(doc, msg_json);
-      enviarMensajePorTopic(msg_to_publish.topic, msg_json);
+      if(strcmp(msg_to_publish.topic, TOPIC_PRESENCIA) == 0)
+      {
+        // Convertimos el mensaje en formato JSON y lo enviamos por el topic correspondiente
+        JsonDocument doc;
+        doc["presencia"] = msg_to_publish.msg;
+        String msg_json;
+        serializeJson(doc, msg_json);
+        enviarMensajePorTopic(msg_to_publish.topic, msg_json);
+      }
+      
     } 
  
     // Espera hasta el próximo intervalo de tiempo

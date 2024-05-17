@@ -20,6 +20,7 @@
 #include <ArduinoJson.h>
 #include "button_interrupt.h"
 #include "buffer_circ_prot.h"
+#include "buffer_mqtt.h"
 #include "qr.h"
 
 void QRCodeReader( void * parameter);
