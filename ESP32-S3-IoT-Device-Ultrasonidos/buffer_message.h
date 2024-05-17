@@ -50,7 +50,7 @@ bool isFull(Buffer_Circ_Message * buff);
  * @param buff. Puntero al buffer circular
  * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
  */
-uint8_t get_item(char data[], Buffer_Circ_Message * buff );
+int8_t get_item(char data[], Buffer_Circ_Message * buff );
 
 /**
  * @brief Inserta un elemento en el buffer
@@ -58,7 +58,7 @@ uint8_t get_item(char data[], Buffer_Circ_Message * buff );
  * @param buff. Puntero al buffer circular
  * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
  */
-uint8_t put_item(char data[], Buffer_Circ_Message * buff );
+int8_t put_item(char data[], Buffer_Circ_Message * buff );
 
 /**
  * @brief Obtiene el número de elementos en el buffer
@@ -72,7 +72,7 @@ uint32_t number(Buffer_Circ_Message * buff);
  * @param buff Puntero al buffer circular
  * @return 0 si se lista correctamente, -1 si el buffer está vacío
  */
-uint8_t listBuffer(Buffer_Circ_Message * buff);
+int8_t listBuffer(Buffer_Circ_Message * buff);
 
 #endif 
 

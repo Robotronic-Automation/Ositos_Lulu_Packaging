@@ -16,7 +16,7 @@
 typedef struct Buffers
 {
 	Buffer_Circ_Measure Measure_buffer;
-  Buffer_Circ_Message Message_buffer;
+  Buffer_Circ_MQTT MQTT_buffer;
   Buffer_Circ_Message Color_buffer;
 
 } Buffers;
@@ -93,7 +93,7 @@ void on_setup()
              GestorComMQTT_Task,            /* Task function. */
              "GestorComMQTT_Task",          /* name of task. */
              10000,                         /* Stack size of task */
-             &buffers.Message_buffer,       /* parameter of the task */
+             &buffers.MQTT_buffer,       /* parameter of the task */
              1,                             /* priority of the task */
              &GestorComMQTT_Task_Handle);   /* Task handle to keep track of created task */
     
@@ -174,24 +174,26 @@ void Controlador_Task( void * parameter )
     {
       // Si se ha obtenido la medida correctamente...  
       // Asignamos un mensaje según la distancia medida
-      char value[10];
+      Msg_MQTT msg;
+
       if( cm <= 25 )
       {
-        strcpy(value, "detect");
+        strcpy(msg.msg, "detect");
         put_item("rojo", &(buffers->Color_buffer));
         // Acciones a tomar cuando se detecta un objeto cerca...
         // Parar el motor dc de la cinta...
       }
       else 
       {
-        strcpy(value, "libre");
+        strcpy(msg.msg, "libre");
         put_item("verde", &(buffers->Color_buffer));
         // Acciones a tomar cuando no se detecta ningún objeto cercano...
         // Reactivar motor dc de la cinta...
       }
 
-      // Insertamos el mensaje en el buffer correspondiente
-      put_item(value, &(buffers->Message_buffer));
+      // Insertamos el mensaje en el buffer correspondiente     
+      msg.topic = TOPIC_PRESENCIA;
+      put_item(msg, &(buffers->MQTT_buffer));
      
     } 
  
@@ -212,9 +214,9 @@ void Controlador_Task( void * parameter )
  */
 void GestorComMQTT_Task( void * parameter )
 {
-  char msg[10];
+  Msg_MQTT msg_to_publish;
   TickType_t xLastWakeTime;
-  Buffer_Circ_Message * buff = (Buffer_Circ_Message *) parameter;
+  Buffer_Circ_MQTT * buff = (Buffer_Circ_MQTT *) parameter;
 
   // Inicialización del tiempo de espera para la tarea periódica
   xLastWakeTime = xTaskGetTickCount();
@@ -225,15 +227,15 @@ void GestorComMQTT_Task( void * parameter )
   while (!PARAR)
   {
     // Obtenemos un mensaje del buffer
-    if(get_item(msg, buff) == 0)
+    if(get_item(&msg_to_publish, buff) == 0)
     {
       // Si se ha obtenido el mensaje correctamente...
       // Convertimos el mensaje en formato JSON y lo enviamos por el topic correspondiente
       JsonDocument doc;
-      doc["presencia"] = msg;
-      String ULTRASONIDOS_msg_json;
-      serializeJson(doc, ULTRASONIDOS_msg_json);
-      enviarMensajePorTopic(TOPIC_PRESENCIA, ULTRASONIDOS_msg_json);
+      doc["presencia"] = msg_to_publish.msg;
+      String msg_json;
+      serializeJson(doc, msg_json);
+      enviarMensajePorTopic(msg_to_publish.topic, msg_json);
     } 
  
     // Espera hasta el próximo intervalo de tiempo

@@ -45,7 +45,7 @@ bool isFull(Buffer_Circ_Measure * buff)
  * @param  data. Variable en la que se guarda el elemento obtenido
  * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
  */
-uint8_t get_item(uint32_t * data, Buffer_Circ_Measure * buff )
+int8_t get_item(uint32_t * data, Buffer_Circ_Measure * buff )
 {
 	if(isEmpty(buff))
   {
@@ -72,7 +72,7 @@ uint8_t get_item(uint32_t * data, Buffer_Circ_Measure * buff )
  * @param  data. Elemento a introducir en el buffer
  * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
  */
-uint8_t put_item(uint32_t data, Buffer_Circ_Measure * buff )
+int8_t put_item(uint32_t data, Buffer_Circ_Measure * buff )
 {
 	if(isFull(buff))
   {
@@ -108,7 +108,7 @@ uint32_t number(Buffer_Circ_Measure * buff)
  * @param  buff. Puntero al buffer circular
  * @return 0 si se lista correctamente, -1 si el buffer está vacío
  */
-uint8_t listBuffer(Buffer_Circ_Measure * buff)
+int8_t listBuffer(Buffer_Circ_Measure * buff)
 {
   if(isEmpty(buff))
   {

@@ -1,16 +1,16 @@
 /**
- * @file buffer_message.ino
- * @brief Implementación de funciones para un buffer circular protegido de mensajes
+ * @file buffer_mqtt.ino
+ * @brief Implementación de funciones para un buffer circular protegido de mensajes MQTT 
  */
 
-#include "buffer_message.h"
+#include "buffer_mqtt.h"
 
 /**
  * @brief  Comprueba si el buffer está vacío
  * @param  buff. Puntero al buffer circular
  * @return true si el buffer está vacío, false en caso contrario
  */
-bool isEmpty(Buffer_Circ_Message * buff)
+bool isEmpty(Buffer_Circ_MQTT * buff)
 {
 	if(buff->contador == 0)
   {
@@ -27,7 +27,7 @@ bool isEmpty(Buffer_Circ_Message * buff)
  * @param  buff. Puntero al buffer circular
  * @return true si el buffer está lleno, false en caso contrario
  */
-bool isFull(Buffer_Circ_Message * buff)
+bool isFull(Buffer_Circ_MQTT * buff)
 {
 	if(buff->contador == BUFSIZE)
   {
@@ -45,7 +45,7 @@ bool isFull(Buffer_Circ_Message * buff)
  * @param  data. Variable en la que se guarda el elemento obtenido
  * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
  */
-int8_t get_item(char data[], Buffer_Circ_Message * buff )
+int8_t get_item(Msg_MQTT * data, Buffer_Circ_MQTT * buff )
 {
 	if(isEmpty(buff))
   {
@@ -55,7 +55,8 @@ int8_t get_item(char data[], Buffer_Circ_Message * buff )
 	else
   {
     portENTER_CRITICAL (&(buff->taskMux)); // Entrar en la región crítica
-    strcpy(data, buff->datos[buff->bufOUT]);
+    data->topic = (buff->datos[buff->bufOUT]).topic; // Copia direccion a la cadena de caracteres del topic
+    strcpy(data->msg, (buff->datos[buff->bufOUT]).msg); // Copia la cadena en data->msg
 		buff->contador--;
 		//Aritmetica en módulo del índice del vector
 		buff->bufOUT = (buff->bufOUT+1) % BUFSIZE;
@@ -70,7 +71,7 @@ int8_t get_item(char data[], Buffer_Circ_Message * buff )
  * @param  data. Elemento a introducir en el buffer
  * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
  */
-int8_t put_item(char data[], Buffer_Circ_Message * buff )
+int8_t put_item(Msg_MQTT data, Buffer_Circ_MQTT * buff )
 {
 	if(isFull(buff))
   {
@@ -80,7 +81,9 @@ int8_t put_item(char data[], Buffer_Circ_Message * buff )
 	else
   {
     portENTER_CRITICAL (&(buff->taskMux)); // Entrar en la región crítica
-		strcpy(buff->datos[buff->bufIN], data);
+		//strcpy(buff->datos[buff->bufIN], data);
+    (buff->datos[buff->bufIN]).topic = data.topic;
+    strcpy((buff->datos[buff->bufIN]).msg, data.msg);
 		buff->contador++;
 		//Aritmetica en módulo del índice del vector
 		buff->bufIN = (buff->bufIN+1) % BUFSIZE;
@@ -94,7 +97,7 @@ int8_t put_item(char data[], Buffer_Circ_Message * buff )
  * @param  buff. Puntero al buffer circular
  * @return Número de elementos en el buffer
  */
-uint32_t number(Buffer_Circ_Message * buff)
+uint32_t number(Buffer_Circ_MQTT * buff)
 {
 	return buff->contador;	
 }
@@ -104,7 +107,7 @@ uint32_t number(Buffer_Circ_Message * buff)
  * @param  buff. Puntero al buffer circular
  * @return 0 si se lista correctamente, -1 si el buffer está vacío
  */
-int8_t listBuffer(Buffer_Circ_Message * buff)
+int8_t listBuffer(Buffer_Circ_MQTT * buff)
 {
 	if(isEmpty(buff))
   {

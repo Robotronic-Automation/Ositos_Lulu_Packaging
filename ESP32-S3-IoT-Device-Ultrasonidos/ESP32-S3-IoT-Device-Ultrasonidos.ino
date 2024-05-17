@@ -15,11 +15,13 @@
 #ifdef SSL_ROOT_CA
   #include <WiFiClientSecure.h>
 #endif
+#include <cstdint> 
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include "button_interrupt.h"
 #include "buffer_circ_prot.h"
 #include "buffer_message.h"
+#include "buffer_mqtt.h"
 
 // Variable global para detener el programa en caso de emergencia
 volatile bool PARAR = false;
