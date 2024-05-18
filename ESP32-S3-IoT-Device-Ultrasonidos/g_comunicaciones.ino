@@ -30,16 +30,6 @@ void alRecibirMensajePorTopic(char * topic, String incomingMessage)
   }
 
   const char * msg;
-  //info("(JSON) Rebut musica: "); infoln(msg);
-
-  /*int lum = doc["luminosidad"];
-  info("(JSON) Rebut luminosidad: "); infoln(lum);
-
-  const char* temp = doc["temperatura"];
-  info("(JSON) Rebut temperatura: "); infoln(temp);
-  */
-  // Test JSON
-
 
   // If a message is received on the topic ...
   if ( strcmp(topic, TOPIC_COLOR) == 0 ) 

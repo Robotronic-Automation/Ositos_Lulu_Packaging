@@ -24,7 +24,15 @@ void setColorLed(const char status[])
     digitalWrite( LED_VERDE, LOW );
     
   }
-  else 
+  else if( strcmp(status,"azul_on") == 0 )
+  {
+    digitalWrite( LED_AZUL, HIGH );
+  }
+  else if( strcmp(status,"azul_off") == 0 )
+  {
+    digitalWrite( LED_AZUL, LOW );
+  }
+  else
   {
     warnln("**>> Solicitud no reconocida!");
   }

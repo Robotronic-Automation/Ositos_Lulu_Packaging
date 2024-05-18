@@ -37,7 +37,7 @@
 #define HELLO_TOPIC               "A1"
 /**** TOPIC_PRESENCIA : manda si se detecta objeto o no ****/
 #define TOPIC_PRESENCIA           "A1/sensor/presencia/cinta/cajas/final"
-// TOPIC_COLOR : manda rojo si el cobot está operando y verde si no
+/**** TOPIC_COLOR : manda azul_on si el cobot está operando y azul_off si no ****/
 #define TOPIC_COLOR               "A1/actuador/led/cinta/cajas/final"
 
 
@@ -48,6 +48,8 @@
 #define LED_AZUL                  4  // Pin led azul
 #define TRIGGER_PIN_ULTRASONIDOS  5  // Pin trigger del ultrasonidos
 #define ECHO_PIN_ULTRASONIDOS     6  // Pin echo del ultrasonidos
+#define MOTOR_PIN                 10 // Pin para activar el motor DC
+
 /**** INTERRUPCION BOTON ****/
 #define PIN_BUTTON 13
 
