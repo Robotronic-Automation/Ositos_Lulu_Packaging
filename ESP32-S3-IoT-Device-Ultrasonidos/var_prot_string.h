@@ -1,46 +1,40 @@
 /**
  * @file  var_prot_string.h
- * @brief Definiciones y funciones para un buffer circular protegido de enteros
+ * @brief Definiciones y funciones para una variable protegida de tipo cadena de caracteres
  */
 
 #ifndef VAR_PROT_STRING_H
 #define VAR_PROT_STRING_H
 
-#include "src/quirc/quirc.h" // Inclusión de la librería Quirc
-#define true 1 ///< Valor booleano verdadero
-#define false 0 ///< Valor booleano falso
-
-
 /**
- * @struct  Buffer_Circ_Measure
- * @brief   Estructura para instanciar un buffer circular protegido
- * @details Almacena los datos del buffer, la posición de entrada y salida,
- *          el contador de elementos y el mutex para proteger el acceso
+ * @struct  Var_Prot_String 
+ * @brief   Estructura para instanciar una cadena de caracteres protegida
+ * @details Almacena el contenido de la cadena de caracteres y el mutex para proteger el acceso
  */
 typedef struct Var_Prot_String 
 {
-	char dato[10]; ///< Vector de enteros que almacena los datos del buffer
+	char dato[10]; ///< Cadena de caracteres protegida
   portMUX_TYPE taskMux = portMUX_INITIALIZER_UNLOCKED; ///< Mutex para proteger el acceso a la variable
 } Var_Prot_String;
 
-// Funciones para el manejo de la variable
+// Funciones para el manejo de la variable protegida
 
 /**
- * @brief Obtiene un elemento del buffer
- * @param data. Puntero al elemento donde se almacenará el dato
- * @param buff. Puntero al buffer circular
- * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
+ * @brief  Obtiene la la cadena de caracteres protegida
+ * @param  data. Puntero a la cadena donde se almacenará el contenido de la cadena protegida
+ * @param  var_prot. Puntero a la variable protegida
+ * @return 0 si se obtiene el valor correctamente correctamente
  */
 int8_t get_value(char data[], Var_Prot_String * var_prot);
 
 /**
- * @brief Inserta un elemento en el buffer
- * @param data. Dato a insertar en el buffer
- * @param buff. Puntero al buffer circular
- * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
+ * @brief Modifica el contenido de la cadena de caracteres protegida
+ * @param data. Cadena de caracteres a insertar en la cadena protegida
+ * @param var_prot. Puntero a la variable protegida
+ * @return 0 si se inserta el elemento correctamente
  */
 int8_t set_value(char data[], Var_Prot_String * var_prot);
 
-#endif 
+#endif // VAR_PROT_STRING_H
 
 /*** End of file ****/

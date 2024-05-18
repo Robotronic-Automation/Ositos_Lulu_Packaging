@@ -1,16 +1,15 @@
 /**
  * @file  var_prot_string.ino
- * @brief Implementación de funciones para un buffer circular protegido
+ * @brief Implementación de funciones para una variable protegida de tipo cadena de caracteres
  */
 
 #include "var_prot_string.h"
 
-
 /**
- * @brief  Obtiene un elemento del buffer
- * @param  buff. Puntero al buffer circular
- * @param  data. Variable en la que se guarda el elemento obtenido
- * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
+ * @brief  Obtiene la la cadena de caracteres protegida
+ * @param  data. Puntero a la cadena donde se almacenará el contenido de la cadena protegida
+ * @param  var_prot. Puntero a la variable protegida
+ * @return 0 si se obtiene el valor correctamente correctamente
  */
 int8_t get_value(char data[], Var_Prot_String * var_prot)
 {
@@ -23,10 +22,10 @@ int8_t get_value(char data[], Var_Prot_String * var_prot)
 }
 
 /**
- * @brief  Inserta un elemento en el buffer
- * @param  buff. Puntero al buffer circular
- * @param  data. Elemento a introducir en el buffer
- * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
+ * @brief Modifica el contenido de la cadena de caracteres protegida
+ * @param data. Cadena de caracteres a insertar en la cadena protegida
+ * @param var_prot. Puntero a la variable protegida
+ * @return 0 si se inserta el elemento correctamente
  */
 int8_t set_value(char data[], Var_Prot_String * var_prot)
 {

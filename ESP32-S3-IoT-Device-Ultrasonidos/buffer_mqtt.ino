@@ -1,5 +1,5 @@
 /**
- * @file buffer_mqtt.ino
+ * @file  buffer_mqtt.ino
  * @brief Implementación de funciones para un buffer circular protegido de mensajes MQTT 
  */
 
@@ -49,7 +49,7 @@ int8_t get_item(Msg_MQTT * data, Buffer_Circ_MQTT * buff )
 {
 	if(isEmpty(buff))
   {
-		//Serial.printf("Error: No hay datos en el vector\n"); 
+		// No hay datos en el vector
 		return -1;
 	}
 	else
@@ -75,13 +75,12 @@ int8_t put_item(Msg_MQTT data, Buffer_Circ_MQTT * buff )
 {
 	if(isFull(buff))
   {
-		Serial.printf("Error: El vector esta lleno\n"); 
+		// El vector esta lleno
 		return -1;
 	}
 	else
   {
     portENTER_CRITICAL (&(buff->taskMux)); // Entrar en la región crítica
-		//strcpy(buff->datos[buff->bufIN], data);
     (buff->datos[buff->bufIN]).topic = data.topic;
     strcpy((buff->datos[buff->bufIN]).msg, data.msg);
 		buff->contador++;
@@ -111,8 +110,7 @@ int8_t listBuffer(Buffer_Circ_MQTT * buff)
 {
 	if(isEmpty(buff))
   {
-		Serial.printf("Error: No hay datos en el vector\n"); 
-
+		// No hay datos en el vector 
 		return -1;
 	}
 	else
@@ -120,7 +118,9 @@ int8_t listBuffer(Buffer_Circ_MQTT * buff)
     Serial.printf("Tu buffer contiene: ");
     for(uint32_t i = 0; i < BUFSIZE; i++)
     {
-      Serial.printf("\t%s", buff->datos[i]);
+      Serial.printf("\nDato %d: ", i);
+      Serial.printf("\n Topic: %s", buff->datos[i].topic);
+      Serial.printf("\n Msg: %s", buff->datos[i].msg);
     }
     Serial.printf("\n");
 

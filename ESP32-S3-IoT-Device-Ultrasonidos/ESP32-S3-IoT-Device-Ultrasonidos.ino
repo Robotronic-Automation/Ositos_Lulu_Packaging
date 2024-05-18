@@ -7,7 +7,7 @@
  * @file ESP32-S3-IoT-Device-Ultrasonidos.ino
  *
  * Control de versiones
- * Version: 0.1   (2024/05/16) Prototipo sin motor DC
+ * Version: 1.0   (2024/05/18) Prototipo completo
  */
 
 #include "Config.h"
@@ -16,34 +16,51 @@
 #ifdef SSL_ROOT_CA
   #include <WiFiClientSecure.h>
 #endif
-#include <cstdint> 
+
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
+#include <Arduino.h>
+#include <cstdint> 
+#include <string>
 
 #include "button_interrupt.h"
-#include "buffer_circ_prot.h"
+#include "buffer_measure.h"
+#include "buffer_mqtt.h"
 #include "var_prot_bool.h"
 #include "var_prot_string.h"
-#include "buffer_message.h"
-#include "buffer_mqtt.h"
+#include "servo.h"
+
+/**
+ * @brief  Estructura para instanciar buffers circulares protegidos y variables 
+ *         protegidas para medidas y mensajes
+ * @member Measure_buffer. Buffer para almacenar medidas del sensor de ultrasonidos
+ * @member MQTT_buffer. Buffer para almacenar mensajes a publicar en el broker MQTT
+ * @member Color_Var. Variable para almacenar el color del LED encendido
+ * @member Azul_Var. Variable para almacenar si se enciende el LED azul o no
+ * @member Motor_Var. Variable para almacenar el estado del motor de la cinta
+ */
+typedef struct Buffers
+{
+	Buffer_Circ_Measure Measure_buffer;
+  Buffer_Circ_MQTT MQTT_buffer;
+  Var_Prot_String Color_Var;
+  Var_Prot_String Azul_Var;
+  Var_Prot_Bool Motor_Var;
+} Buffers;
+
+// Instancia de estructura Buffers que contiene buffers circulares y variables protegidas 
+static Buffers buffers;
 
 // Variable global para detener el programa en caso de emergencia
 volatile bool PARAR = false;
 
-// ID de Dispositivo : se proporcionan varias alternativas, a modo de ejemplo
+// ID de Dispositivo 
 String deviceID = String("giirobpr2-device-") + String(DEVICE_GIIROB_PR2_ID); 
-  // Versión usando el ID asignado en la asignatura GIIROB-PR2
-//String deviceID = String("device-") + String(WiFi.macAddress());            
-  // Versión usando la dirección MAC del dispositivo
-//String deviceID = String("device-esp32s3-") + String(DEVICE_ESP_ID);        
-  // Versión usando el ID de ESP del dispositivo
 
 /**
  * @brief  Configuración inicial del programa. Configura conceptos 'core',
  *         inicializa la conexión WiFi y la conexión con el bróker MQTT,
- *         se suscribe a topics y llama a on_setup.
- * @param  ninguno
- * @return ninguno
+ *         se suscribe a topics y llama a on_setup
  */
 void setup() 
 {
@@ -80,16 +97,9 @@ void setup()
  * @brief  Bucle principal del programa. Gestiona las tareas repetitivas
  *         como la conexión WiFi, la conexión MQTT y las acciones definidas
  *         en on_loop
- * @param  ninguno
- * @return ninguno
  */
 void loop() 
 {
-
-  // Tareas repetitivas
-  wifi_loop(); // Gestión de la conexión WiFi
-  mqtt_loop(); // Gestión de la conexión MQTT
-
   // Tareas específicas del dispositivo definidas en on_loop
   on_loop();
 }

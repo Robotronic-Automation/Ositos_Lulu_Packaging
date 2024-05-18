@@ -1,5 +1,5 @@
 /**
- * @file e_mqtt_lib_no_tocar.ino
+ * @file  e_mqtt_lib_no_tocar.ino
  * @brief Archivo que contiene funciones para la gestión de la conexión MQTT
  */
 

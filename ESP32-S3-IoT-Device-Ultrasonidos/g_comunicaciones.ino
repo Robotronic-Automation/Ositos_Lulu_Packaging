@@ -4,11 +4,11 @@
  */
 
 /**
- * @brief Se suscribe a los topics MQTT para recibir mensajes.
+ * @brief Se suscribe a los topics MQTT para recibir mensajes
  */
 void suscribirseATopics() 
 {
-  mqtt_subscribe(TOPIC_COLOR); // Suscribirse al topic de color
+  mqtt_subscribe(TOPIC_COBOT); // Suscribirse al topic del cobot
 }
 
 /**
@@ -28,17 +28,17 @@ void alRecibirMensajePorTopic(char * topic, String incomingMessage)
     warnln(err.f_str());
     return;
   }
-
+  
   const char * msg;
 
   // If a message is received on the topic ...
-  if ( strcmp(topic, TOPIC_COLOR) == 0 ) 
+  if ( strcmp(topic, TOPIC_COBOT) == 0) 
   {
-    // Extraer el campo "color_estado" del mensaje JSON
-    msg = doc["color_estado"];
+    // Extraer el campo "cobot_estado" del mensaje JSON
+    msg = doc["cobot_estado"];
     infoln(msg);
-    // Llamar a la función para establecer el color del LED
-    setColorLed(msg);
+    // Guardar el estado del LED azul en su variable protegida
+    set_value( (char *)msg, &(buffers.Azul_Var) );
   }
   
 }

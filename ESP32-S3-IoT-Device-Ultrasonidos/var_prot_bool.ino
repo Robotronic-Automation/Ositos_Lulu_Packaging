@@ -1,16 +1,16 @@
 /**
  * @file  var_prot_bool.ino
- * @brief Implementación de funciones para un buffer circular protegido
+ * @brief Implementación de funciones para una variable protegida booleana
  */
 
 #include "var_prot_bool.h"
 
 
 /**
- * @brief  Obtiene un elemento del buffer
- * @param  buff. Puntero al buffer circular
- * @param  data. Variable en la que se guarda el elemento obtenido
- * @return 0 si se obtiene el elemento correctamente, -1 si el buffer está vacío
+ * @brief Obtiene el valor de la variable protegida
+ * @param data. Puntero al elemento donde se almacenará el contenido de la variable
+ * @param var_prot. Puntero a la variable protegida 
+ * @return 0 si se obtiene el valor correctamente
  */
 int8_t get_value(bool * data, Var_Prot_Bool * var_prot)
 {
@@ -23,10 +23,10 @@ int8_t get_value(bool * data, Var_Prot_Bool * var_prot)
 }
 
 /**
- * @brief  Inserta un elemento en el buffer
- * @param  buff. Puntero al buffer circular
- * @param  data. Elemento a introducir en el buffer
- * @return 0 si se inserta el elemento correctamente, -1 si el buffer está lleno
+ * @brief Modifica el valor de la variable protegida
+ * @param data. Valor al que se desea establecer la variable
+ * @param var_prot. Puntero a la variable protegida 
+ * @return 0 si modifica el valor correctamente
  */
 int8_t set_value(bool data, Var_Prot_Bool * var_prot)
 {

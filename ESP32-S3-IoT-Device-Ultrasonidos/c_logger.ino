@@ -1,6 +1,12 @@
 /**
- *@file c_logger.ino
+ * @file c_logger.ino
+ * @brief Biblioteca de macros de logging para diferentes niveles de severidad.
+ * @details Esta biblioteca define macros para la generación de mensajes de logging en 
+ *          diferentes niveles de severidad (TRACE, DEBUG, INFO, WARN, ERROR, FATAL).
+ *          El nivel de logging se controla mediante la macro LOG_LEVEL. Si LOG_LEVEL no está definido,
+ *          todas las macros de logging se desactivan. Los mensajes se imprimen utilizando Serial.print().
  */
+
 
 // LOGGING
 #define TRACE 6
@@ -40,6 +46,6 @@ bool _log_newline = true;
 #define fatal(message)
 #define fatalln(message)
 
-#endif
+#endif // LOG_LEVEL
 
 /*** End of file ****/
