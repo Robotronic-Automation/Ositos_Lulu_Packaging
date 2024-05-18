@@ -1,14 +1,13 @@
 /**
- @file qr.ino
-*/
+ * @file  qr.ino
+ * @brief Configuración de la cámara para la lectura de códigos QR
+ */
 
 #include "qr.h"
 
 /**
- @brief config_camara. Funcion para configurar la camara 
- @param  ninguno
- @return ninguno
-*/ 
+ * @brief Configura e inicializa la cámara
+ */
 void config_camara()
 {
   /* Camera configuration. */
@@ -51,26 +50,12 @@ void config_camara()
   Serial.println();}
 
 /**
- @brief config_camara. Funcion para mostrar los resultados de lectura 
-                       del codigo QR en el serial monitor
- @param  buff_prod. Buffer para guardar el payload del codigo QR
- @param  data. Estructura con la informacion del codigo QR
- @return ninguno
-*/ 
-/*
-void dumpData_bis(const struct quirc_data *data)
-{
-  Serial.printf("Version: %d\n", data->version);
-  Serial.printf("ECC level: %c\n", "MLHQ"[data->ecc_level]);
-  Serial.printf("Mask: %d\n", data->mask);
-  Serial.printf("Length: %d\n", data->payload_len);
-  Serial.printf("Payload: %s\n", data->payload);
-  
-  QRCodeResult = (const char *)data->payload;
-}
-*/
-
-void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data)
+ * @brief Muestra los resultados de lectura del código QR
+ * 
+ * @param buff. Buffer para guardar el payload del código QR
+ * @param data. Estructura con la información del código QR
+ */
+void dumpData_bis(Buffer_Circ_String * buff, const struct quirc_data * data)
 {
   char QRCodeResult[10];
   Serial.printf("Version: %d\n", data->version);
@@ -79,11 +64,9 @@ void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data)
   Serial.printf("Length: %d\n", data->payload_len);
   Serial.printf("Payload: %s\n", data->payload);
   
-  //QRCodeResult = (const char *)data->payload;
   strcpy(QRCodeResult,(const char *)data->payload);
-  printf("QRCR: %s\n", QRCodeResult);
-  put_item(QRCodeResult, buff_prod);
+  Serial.printf("QRCR: %s", QRCodeResult);
+  put_item(QRCodeResult, buff);
 }
-
 
 /*** End of file ****/

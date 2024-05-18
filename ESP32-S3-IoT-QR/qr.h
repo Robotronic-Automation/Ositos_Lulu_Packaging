@@ -1,12 +1,11 @@
 /**
- @file qr.h
-*/
+ * @file  qr.h
+ * @brief Definiciones y declaraciones para la configuración de la cámara y lectura de códigos QR
+ */
 
 #ifndef QR_H
 #define QR_H
 
-#include <Arduino.h>
-#include "src/quirc/quirc.h"
 #include "esp_camera.h"
 
 /* GPIO of CAMERA_MODEL_ESP32S3_EYE */
@@ -30,6 +29,10 @@
  
 /*  Declaracion de Variables */
 
+/**
+ * @struct QRCodeData
+ * @brief  Estructura para datos de códigos QR.
+ */
 struct QRCodeData
 {
   bool valid;
@@ -38,20 +41,30 @@ struct QRCodeData
   int payloadLen;
 };
 
-struct quirc *q = NULL;
-uint8_t *image = NULL;  
-camera_fb_t * fb = NULL;
-struct quirc_code code;
-struct quirc_data data;
-quirc_decode_error_t err;
-struct QRCodeData qrCodeData;  
-//String QRCodeResult = "";
+// Puntero al objeto quirc para el manejo del QR
+struct quirc * q = NULL;
+uint8_t * image = NULL;         // Puntero a la imagen capturada
+camera_fb_t * fb = NULL;       // Puntero al frame buffer de la cámara
+struct quirc_code code;        // Estructura para el código QR
+struct quirc_data data;        // Estructura para los datos del QR
+quirc_decode_error_t err;      // Variable para errores de decodificación
+struct QRCodeData qrCodeData;  // Estructura para almacenar datos del QR
 
-// Funcion para configurar la camara 
+// Prototipos de funciones
+
+/**
+ * @brief Configura e inicializa la cámara
+ */
 void config_camara();
-// Funcion para mostrar los resultados de lectura del codigo QR en el serial monitor
-void dumpData_bis(Buffer_Circ * buff_prod, const struct quirc_data * data);
 
-#endif
+/**
+ * @brief Muestra los resultados de lectura del código QR en el monitor serial 
+ *        y guarda el contenido del QR en el buffer 
+ * @param buff. Buffer para guardar el payload del código QR
+ * @param data. Estructura con la información del código QR
+ */
+void dumpData_bis(Buffer_Circ_String * buff, const struct quirc_data * data);
+
+#endif // QR_H
 
 /*** End of file ****/

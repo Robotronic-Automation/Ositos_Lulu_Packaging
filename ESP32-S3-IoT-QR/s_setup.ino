@@ -3,25 +3,23 @@
  * @brief Configuración de pines, inicialización de variables y creación de tareas
  */
 
-#include <string>
-
-#define SensorsUpdateInterval 1000 // 1 segundo de frecuencia de muestreo
 
 /**
  * @brief  Estructura para instanciar un buffer circular protegido para mensajes y otro para medidas 
- * @member Measure_buffer. Buffer para guardar medidas del sensor de ultrasonidos
- * @member MQTT_buffer. 
+ * @member QR_buffer. Buffer para guardar el codigo de producto que contiene el QR leído
+ * @member MQTT_buffer. Buffer para almacenar mensajes a publicar en el broker MQTT
  * @member Color_buffer. Buffer para guardar el color del LED segun se lea o no qr
  */
 typedef struct Buffers
 {
-	Buffer_Circ QR_buffer;
+	Buffer_Circ_String QR_buffer;
   Buffer_Circ_MQTT MQTT_buffer;
-  Buffer_Circ Color_buffer;
+  Buffer_Circ_String Color_buffer;
 } Buffers;
 
 // Crea un task handle para cada tarea 
-TaskHandle_t  Controlador_Task_Handle, GestorComMQTT_Task_Handle, QRCodeReader_Task_Handle, Led_Task_Handle;
+TaskHandle_t  Controlador_Task_Handle, GestorComMQTT_Task_Handle, 
+  QRCodeReader_Task_Handle, Led_Task_Handle;
 
 // Instancia de estructura Buffers que contiene buffers circulares protegidos
 static Buffers buffers;
@@ -34,7 +32,7 @@ void Led_Task( void * parameter);
 
 
 /**
- * @brief on_setup. Configuración de pines, inicialización de variables y creación de tareas
+ * @brief Configuración de pines, inicialización de variables y creación de tareas
  */
 void on_setup() 
 {
@@ -42,7 +40,6 @@ void on_setup()
     // Inicializacion de pines 
     pinMode(LED_ROJO, OUTPUT);
     pinMode(LED_VERDE, OUTPUT);
-  //  pinMode(LED_AZUL, OUTPUT);
 
     // Configurar la cámara y la interrupción con el botón
     config_camara();
@@ -60,13 +57,13 @@ void on_setup()
 
     /* Create "QRCodeReader_Task" */
     xTaskCreatePinnedToCore(
-             QRCodeReader_Task,           /* Task function. */
-             "QRCodeReader_Task",         /* name of task. */
-             10000,                       /* Stack size of task */
-             &buffers.QR_buffer,          /* parameter of the task */
-             1,                           /* priority of the task */
-             &QRCodeReader_Task_Handle,   /* Task handle to keep track of created task */
-             1);                          /* pin task to core 0 */
+             QRCodeReader_Task,             /* Task function. */
+             "QRCodeReader_Task",           /* name of task. */
+             10000,                         /* Stack size of task */
+             &buffers.QR_buffer,            /* parameter of the task */
+             1,                             /* priority of the task */
+             &QRCodeReader_Task_Handle,     /* Task handle to keep track of created task */
+             0);                            /* pin task to core 0 */
 
     /* Crear "Controlador_Task" */
     xTaskCreatePinnedToCore(
@@ -76,23 +73,23 @@ void on_setup()
              &buffers,                      /* parameter of the task */
              1,                             /* priority of the task */
              &Controlador_Task_Handle,      /* Task handle to keep track of created task */
-             1);                            /* pin task to core 0 */
+             0);                            /* pin task to core 0 */
     
   /* Crear "Led_Task" */
     xTaskCreate(
-             Led_Task,                    /* Task function. */
-             "Led_Task",                  /* Name of task. */
-             10000,                       /* Stack size of task */
-             &buffers.Color_buffer,       /* Parameter of the task */
-             1,                           /* Priority of the task */
-             &Led_Task_Handle);           /* Task handle to keep track of created task */
+             Led_Task,                      /* Task function. */
+             "Led_Task",                    /* Name of task. */
+             10000,                         /* Stack size of task */
+             &buffers.Color_buffer,         /* Parameter of the task */
+             1,                             /* Priority of the task */
+             &Led_Task_Handle);             /* Task handle to keep track of created task */
 
     /* Crear "GestorComMQTT_Task" */
     xTaskCreate(
              GestorComMQTT_Task,            /* Task function. */
              "GestorComMQTT_Task",          /* name of task. */
              10000,                         /* Stack size of task */
-             &buffers.MQTT_buffer,       /* parameter of the task */
+             &buffers.MQTT_buffer,          /* parameter of the task */
              1,                             /* priority of the task */
              &GestorComMQTT_Task_Handle);   /* Task handle to keep track of created task */
   
@@ -100,16 +97,22 @@ void on_setup()
 
 }
 
+/**
+ * @brief Tarea que lee códigos QR y procesa las imágenes capturadas por la cámara
+ * @param parameter. Puntero a la estructura de buffer circular
+ */
 void QRCodeReader_Task( void * parameter )
 {
-  Serial.println("QRCodeReader is ready.");
-  Serial.print("QRCodeReader running on core ");
-  Serial.println(xPortGetCoreID());
-  Serial.println();
   TickType_t xLastWakeTime;
-  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
-  Serial.printf("Hola desde la tarea QRCodeReader_Task en el Core %d\n",xPortGetCoreID());
+  Buffer_Circ_String * buff = (Buffer_Circ_String *) parameter;
+
+  // Inicialización del tiempo de espera para la tarea periódica
   xLastWakeTime = xTaskGetTickCount();
+
+  // Mensaje de inicio de la tarea
+  Serial.printf("Hola desde la tarea QRCodeReader_Task en el Core %d\n",xPortGetCoreID());
+  
+  // Bucle principal de la tarea
     while (!PARAR)
     {
       q = quirc_new();
@@ -140,12 +143,12 @@ void QRCodeReader_Task( void * parameter )
         if (err)
         {
           Serial.println("Decoding FAILED");
-          //QRCodeResult = "Decoding FAILED";
         } 
         else 
         {
           Serial.printf("Decoding successful:\n");
-          dumpData_bis(buff_prod, &data);
+          dumpData_bis(buff, &data);
+          // Espera hasta el próximo intervalo de tiempo
           vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
         } 
 
@@ -159,62 +162,66 @@ void QRCodeReader_Task( void * parameter )
 
     }
 
-    Serial.println("Finalizando tarea QRCodeReader_Task");
-    vTaskDelete( NULL );  
+  // Tarea finalizada
+  Serial.println("Finalizando tarea QRCodeReader_Task");
+  vTaskDelete( NULL );  
+
 }
 
 
 /**
  * @brief Tarea para interpretar mediciones del sensor y tomar acciones en función de ellas
- * @param parameter. Puntero a la estructura de buffers que contiene las medidas y mensajes
+ * @param parameter. Puntero a la estructura de buffers que contiene los codigos de producto 
+ *                   leídos de QRs y el color del LED a encender
  */
 void Controlador_Task( void * parameter )
 {
   char qr[10];
   TickType_t xLastWakeTime;
-  Buffers * buff_prod = (Buffers *) parameter;
+  Buffers * buff = (Buffers *) parameter;
   Serial.printf("Hola desde la tarea Controlador_Task en el Core %d\n", xPortGetCoreID());
   xLastWakeTime = xTaskGetTickCount();
   while (!PARAR)
   {
-    if(get_item(qr, &(buff_prod->QR_buffer)) == 0)
+    if(get_item(qr, &(buff->QR_buffer)) == 0)
     {
       // Si he podido obtener dato...
-        // Hacemos documento de json con el mensaje y enviamos por topic
-        // JsonDocument doc;
-        // doc["codProducto"] = qr;
-        // printf("QR: %s\n", qr);
-        // String QR_msg_json;
-        // serializeJson(doc, QR_msg_json);
-        // enviarMensajePorTopic(TOPIC_QR, QR_msg_json);
+      // Guardamos mensaje a publicar y su topic en el buffer de mensajes MQTT  
         Msg_MQTT msg_qr;
         msg_qr.topic = TOPIC_QR; 
         strcpy(msg_qr.msg, qr);
-        put_item(msg_qr, &(buff_prod->MQTT_buffer));
-        put_item("verde", &(buff_prod->Color_buffer));
+        put_item(msg_qr, &(buff->MQTT_buffer));
+      // Guardamos el color verde en el buffer para cambiar de LED
+        put_item("verde", &(buff->Color_buffer));
     } 
     else
     {
       //  Si no se ha podido obtener dato...
-        put_item("rojo", &(buff_prod->Color_buffer));
+      // Guardamos el color rojo en el buffer para cambiar de LED
+        put_item("rojo", &(buff->Color_buffer));
     }
 
-    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    // Espera hasta el próximo intervalo de tiempo
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval / portTICK_PERIOD_MS) );
     
   }
+
+  // Tarea finalizada
   Serial.println("Finalizando tarea Controlador_Task");
   vTaskDelete( NULL );
+
 }
 
 /**
- * @brief Tarea para encender el LED según se haya realizado la lectura de un código QR o no
- * @param parameter Puntero al buffer donde se obtiene el color del LED
+ * @brief Tarea para encender el LED correspondiente según se haya realizado 
+ *        la lectura de un código QR o no
+ * @param parameter. Puntero al buffer donde se obtiene el color del LED a encender
  */
 void Led_Task( void * parameter)
 {
   char color[10];
   TickType_t xLastWakeTime;
-  Buffer_Circ * buff_prod = (Buffer_Circ *) parameter;
+  Buffer_Circ_String * buff = (Buffer_Circ_String *) parameter;
 
   // Inicialización del tiempo de espera para la tarea periódica
   xLastWakeTime = xTaskGetTickCount();
@@ -226,14 +233,14 @@ void Led_Task( void * parameter)
   while (!PARAR)
   {
     // Intenta obtener un color del buffer
-    if(get_item(color, buff_prod) == 0)
+    if(get_item(color, buff) == 0)
     {
       // Si se ha obtenido el color correctamente, establece el color del LED
       setColorLed((const char *)color);
     } 
     
     // Espera hasta el próximo intervalo de tiempo
-    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS));
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval / portTICK_PERIOD_MS) );
     
   }
 
@@ -245,7 +252,8 @@ void Led_Task( void * parameter)
 
 /**
  * @brief Tarea para gestionar las comunicaciones con el broker MQTT
- * @param parameter. Puntero al buffer donde se obtienen los mensajes para enviarlos por MQTT
+ * @param parameter. Puntero al buffer donde se obtienen los mensajes 
+ *                   para enviarlos por MQTT
  */
 void GestorComMQTT_Task( void * parameter )
 {
@@ -278,7 +286,7 @@ void GestorComMQTT_Task( void * parameter )
     } 
  
     // Espera hasta el próximo intervalo de tiempo
-    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval/ portTICK_PERIOD_MS) );
+    vTaskDelayUntil( &xLastWakeTime, (SensorsUpdateInterval / portTICK_PERIOD_MS) );
     
   }
 

@@ -1,32 +1,27 @@
 /**
- * @file button_interrupt.h
- * @brief Definiciones y funciones para gestionar un botón con interrupción
+ * @file  button_interrupt.h
+ * @brief Funciones para gestionar un botón con interrupción
  */
 
 #ifndef BUTTON_INTERRUPT_H
 #define BUTTON_INTERRUPT_H
 
-#include <Arduino.h>
+// Funciones para gestionar la interrupción del botón
 
 /**
- * @struct  Button
- * @brief   Estructura para almacenar el estado de un botón.
- * @details Contiene el pin al que está conectado el botón y 
- *          un indicador de si el botón está actualmente presionado.
+ * @brief   Función de la rutina de interrupción
+ * @details Establece el indicador de botón presionado
  */
-struct Button 
-{
-  const uint8_t PIN; ///< Pin al que está conectado el botón
-  bool pressed; ///< Indica si el botón está presionado en este momento
-};
-
-// Instancia de botón asignando pin y no pulsado
-Button button1 = { PIN_BUTTON, false };
-
-// Funciones para gestionar la interrupción del botón
 void IRAM_ATTR isr(); ///< Función de la rutina de interrupción
+
+/**
+ * @brief   Función para configurar la interrupción del botón
+ * @details Configura el pin conectado al botón como entrada pull-up y
+ *          asigna la rutina de servicio 'isr' para la interrupción
+ *          cuando se produce un flanco de bajada
+ */
 void config_button(); ///< Función para configurar la interrupción del botón
 
-#endif 
+#endif // BUTTON_INTERRUPT_H
 
 /*** End of file ****/

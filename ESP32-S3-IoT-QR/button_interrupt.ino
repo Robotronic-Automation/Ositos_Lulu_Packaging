@@ -1,5 +1,5 @@
 /**
- * @file button_interrupt.ino
+ * @file  button_interrupt.ino
  * @brief Implementación de funciones para gestionar un botón con interrupción
  */
 
@@ -11,7 +11,6 @@
  */
 void IRAM_ATTR isr() 
 {
-  button1.pressed = true;
   PARAR = true; // Activa la variable global para detener el programa en caso de emergencia
 }
 
@@ -24,13 +23,13 @@ void IRAM_ATTR isr()
 void config_button()
 {
   // Configurar el pin conectado al botón como entrada pull-up
-  pinMode(button1.PIN, INPUT_PULLUP);
+  pinMode(PIN_BUTTON, INPUT_PULLUP);
 
   /* 
    * Asignar la rutina de servicio 'isr' para la interrupción  
    * cuando se produce un flanco de bajada
    */
-  attachInterrupt(button1.PIN, isr, FALLING);
+  attachInterrupt(PIN_BUTTON, isr, FALLING);
 }
 
 /*** End of file ****/

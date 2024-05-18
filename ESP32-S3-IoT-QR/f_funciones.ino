@@ -1,25 +1,25 @@
 /**
  * @file  f_funciones.ino
- * @brief Implementación de funciones para controlar los LEDs y medir distancias con un sensor ultrasónico
+ * @brief Implementación de funciones para controlar los LEDs 
  */
 
 /**
- * @brief   Modifica el color del LED según el color indicado
- * @param   status Color deseado para el LED (verde o rojo)
+ * @brief   Enciende el LED correspondiente según el color indicado
+ * @param   status. LED que se desea encender (verde o rojo)
  * @details Enciende el LED correspondiente al color proporcionado y apaga los otros
  */
 void setColorLed(const char status[]) 
 {
   if ( strcmp(status,"verde") == 0 ) 
   {
-    printf("Led verde encendido\n");
+    traceln("Led verde encendido");
     digitalWrite( LED_ROJO, LOW );
     digitalWrite( LED_VERDE, HIGH );
     
   } 
   else if ( strcmp(status,"rojo") == 0 )
   {
-    printf("Led rojo encendido\n");
+    traceln("Led rojo encendido");
     digitalWrite( LED_ROJO, HIGH );
     digitalWrite( LED_VERDE, LOW );
     

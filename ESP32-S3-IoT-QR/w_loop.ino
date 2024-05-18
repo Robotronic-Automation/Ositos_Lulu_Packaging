@@ -17,17 +17,9 @@ void on_loop()
   // Bucle principal
   while (!PARAR)
   {
-    // Verifica si el botón ha sido pulsado
-    if (button1.pressed) 
-    {
-      
-      // Restablece el estado del botón pulsado
-      button1.pressed = false;
-
-    }
-
-    // Breve retraso para evitar bucle de lecturas intensivas
-    delay(100);
+    // Tareas repetitivas
+    wifi_loop(); // Gestión de la conexión WiFi
+    mqtt_loop(); // Gestión de la conexión MQTT
   }
 
   
