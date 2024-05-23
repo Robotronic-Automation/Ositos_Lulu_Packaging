@@ -1,15 +1,13 @@
 # ESP32-S3-IoT-QR
 
----
-
 ## Contents
   - [Descripción](#descripción)
   - [Librerías](#librerías)
   - [Entorno](#entorno)
   - [Documentación](#documentación)
-  - [Esquema del Circuito](#esquema-circuito)
-  - [Disposición en Planta](#disposición-planta)
-  - [Instrucciones para la Instalación e Integración](#instrucciones-instalación-integración)
+  - [Esquema del Circuito](#esquema-del-circuito)
+  - [Disposición en Planta](#disposición-en-planta)
+  - [Instrucciones para la Instalación e Integración](#instrucciones-para-la-instalación-e-integración)
 
 ---
 
@@ -37,7 +35,7 @@ Una vez descargado, descargar las librerías:
 
 ## Documentación
 
-Puedes usar la [ESP32-S3-IoT-QR Online Documentation](https://github.com/Tamala24/ROBOTRONIC/) para obtener toda la información sobre el código de este proyecto.
+Puedes usar la [ESP32-S3-IoT-QR Online Documentation](https://github.com/Tamala24/ROBOTRONIC) para obtener toda la información sobre el código de este proyecto.
 
 ---
 
@@ -53,14 +51,16 @@ Puedes usar la [ESP32-S3-IoT-QR Online Documentation](https://github.com/Tamala2
 
 ## Instrucciones para la Instalación e Integración
 
-### 1. Instalar y configurar el entorno Arduino con las librerías especificadas, además de instalar el programa para la comunicación MQTT.
+  #### 1. Instalar y configurar el entorno Arduino con las librerías especificadas, además de instalar el programa para la comunicación MQTT.
 
-### 2. Instalar el código fuente descargando la carpeta zip de este repositorio o usando git clone.
+  #### 2. Instalar el código fuente descargando la carpeta zip de este repositorio o usando git clone.
 
-### 3. Montar el circuito como se indica en la [figura](esquema-circuito).
+  #### 3. Modificar valores del código por los de la empresa.
 
-### 4. Conectar la placa al ordenador usando el puerto USB y compilar el proyecto y subir a la ESP32-S3.
+  #### 4. Montar el circuito como se indica en la [figura](#esquema-del-circuito).
 
+  #### 5. Conectar la placa al ordenador usando el puerto USB, compilar el proyecto y subir a la ESP32-S3.
 
+  #### 6. Desconectar la placa y situarla en su posición en [planta](#disposición-en-planta) conectada a una fuente de alimentación externa.
 
 
