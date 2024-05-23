@@ -7,6 +7,7 @@
   - [Documentación](#documentación)
   - [Esquema del Circuito](#esquema-del-circuito)
   - [Disposición en Planta](#disposición-en-planta)
+  - [Diagramas de comunicación MQTT](#diagramas-de-comunicación-mqtt)
   - [Instrucciones para la Instalación e Integración](#instrucciones-para-la-instalación-e-integración)
 
 ---
@@ -45,6 +46,27 @@ Puedes usar la [ESP32-S3-IoT-QR Online Documentation](https://github.com/Tamala2
 ---
 
 ## Disposición en Planta
+
+
+---
+
+## Diagramas de comunicación MQTT
+
+A continuación se describen los diagramas de comunicación MQTT de las interacciones indirectas presentes en la estación robotizada:
+
+#### Interacción sensor botón emergencia - estación
+  Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico implementado en la automatización. La ESP32 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la automatización (robot UR, delta, todas las ESP32-S3) y detendrán inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
+
+  <p align="center">
+		<img height=200 align="center" src="./images/boton-pe.png" />
+  </p>
+
+#### Interacción sensor cámara - base de datos
+  La ESP32-S3 publica en el topic “A1/sensor/camara/qr/cinta/cajas” la información que contiene el código QR que lee. La publicación de la información del QR en el bróker simula la introducción de datos de forma automática en una base de datos que almacena los datos en relación a las cajas producidas.
+
+  <p align="center">
+		<img height=200 align="center" src="./images/qr-db.png" />
+  </p>
 
 
 ---
