@@ -65,7 +65,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
   La ESP32-S3 publica en el topic “A1/sensor/camara/qr/cinta/cajas” la información que contiene el código QR que lee. La publicación de la información del QR en el bróker simula la introducción de datos de forma automática en una base de datos que almacena los datos en relación a las cajas producidas.
 
   <p align="center">
-		<img height=200 align="center" src="./images/qr-db.png" />
+		<img height=300 width=500 align="center" src="./images/qr-db.png" />
   </p>
 
 
