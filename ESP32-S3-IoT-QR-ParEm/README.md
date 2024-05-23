@@ -24,9 +24,11 @@ El código se ha desarrollado en el entorno de desarrollo integrado de Arduino A
 Para establecer la comunicación MQTT se recomienda el programa [MQTTX](https://mqttx.app/downloads), aunque se puede utilizar cualquier otro.
 
 <p align="center">
-		<img height=100 width=100 align="left" src="./images/arduino_logo.jpg" />
-		<img height=100 width=100 align="right" src="./images/mqttx_logo.png" />
+		<img height=100 width=100 align="center" src="./images/arduino_logo.jpg" />
+		<img height=100 width=100 align="center" src="./images/mqttx_logo.png" />
 </p>
+
+<br>
 
 ---
 
@@ -50,7 +52,7 @@ Puedes usar la [ESP32-S3-IoT-QR Online Documentation](https://github.com/Tamala2
 A continuación, se muestra la imagen del esquema de montaje del circuito: 
 
 <p align="center">
-		<img height=200 width=500 align="center" src="./images/esq_circ.png" />
+		<img height=400 width=600 align="center" src="./images/esq_circ.png" />
 </p>
 
 
@@ -61,7 +63,7 @@ A continuación, se muestra la imagen del esquema de montaje del circuito:
 El montaje anterior se dispondrá en planta encima de un soporte unido a la cinta en la siguiente posición:
 
 <p align="center">
-		<img height=400 width=600 align="center" src="./images/disp_planta.jpeg" />
+		<img height=400 width=1000 align="center" src="./images/disp_planta.jpeg" />
 </p>
 
 
@@ -96,7 +98,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
   #### 3. Modificar valores del código por los de la empresa.
 
-  	Para conectar la ESP32-S3 al wifi y al broker MQTT de la emmpresa, modificar las constantes NET_SSID, NET_PASSWD, MQTT_SERVER_IP, MQTT_USERNAME y MQTT_PASSWORD del archivo `Config.h`
+  Para conectar la ESP32-S3 al wifi y al broker MQTT de la emmpresa, modificar las constantes NET_SSID, NET_PASSWD, MQTT_SERVER_IP, MQTT_USERNAME y MQTT_PASSWORD del archivo `Config.h`
   
 	  ```c
 		/**
@@ -123,7 +125,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
     		#endif // CONFIG_H
       		
 	```
- 	Si se desea modificar los topics por unos más acordes para su integración en la flota de la empresa modificar los valores de HELLO_TOPIC, TOPIC_PRESENCIA, TOPIC_COBOT y TOPIC_PARADA_EMERGENCIA del archivo `Config.h` 
+ Si se desea modificar los topics por unos más acordes para su integración en la flota de la empresa modificar los valores de HELLO_TOPIC, TOPIC_PRESENCIA, TOPIC_COBOT y TOPIC_PARADA_EMERGENCIA del archivo `Config.h` 
   
 	 ```c
 		/**
