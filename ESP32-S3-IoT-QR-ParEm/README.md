@@ -18,6 +18,7 @@
 Sistema basado en una ESP32-S3 que lee los códigos de producto que contienen los QR de cada caja en la cinta mediante una cámara empleada como lector de QR. Se señaliza la detección de QR mediante 2 LEDs, uno rojo que indica que no se ha podido leer QR y otro verde cuando la lectura se ha realizado de forma satisfactoria. Además, los códigos de las cajas se envían por MQTT para su posterior clasificación en la base de datos de la empresa. La comunicación inalámbrica se realiza mediante el protocolo MQTT y la comunicación local entre tareas haciendo uso de buffers circulares protegidos. Como medida de seguridad se implementa una interrupción activada por la pulsación de un botón que para todo el sistema.
 
 <br>
+
 ---
 
 ## Entorno
@@ -59,8 +60,10 @@ Puedes usar la [ESP32-S3-IoT-QR Online Documentation](https://github.com/Tamala2
 
 A continuación, se muestra la imagen del esquema de montaje del circuito: 
 
+<br>
+
 <p align="center">
-		<img height=500 width=800 align="center" src="./images/esq_circ.png" />
+		<img height=500 width=850 align="center" src="./images/esq_circ.png" />
 </p>
 
 <br>
@@ -70,6 +73,8 @@ A continuación, se muestra la imagen del esquema de montaje del circuito:
 ## Disposición en Planta
 
 El montaje anterior se dispondrá en planta encima de un soporte unido a la cinta en la siguiente posición:
+
+<br>
 
 <p align="center">
 		<img height=500 width=1000 align="center" src="./images/disp_planta.jpeg" />
@@ -86,13 +91,18 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 ### Interacción sensor botón emergencia - estación
   Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico implementado en la automatización. La ESP32 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la automatización (robot UR, delta, todas las ESP32-S3) y detendrán inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
 
+<br>
+
   <p align="center">
 		<img height=400 width=600 align="center" src="./images/boton-pe.png" />
   </p>
+  
 <br>
 
 ### Interacción sensor cámara - base de datos
   La ESP32-S3 publica en el topic “A1/sensor/camara/qr/cinta/cajas” la información que contiene el código QR que lee. La publicación de la información del QR en el bróker simula la introducción de datos de forma automática en una base de datos que almacena los datos en relación a las cajas producidas.
+
+<br>
 
   <p align="center">
 		<img height=400 width=600 align="center" src="./images/qr-db.png" />
@@ -104,9 +114,9 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
 ## Funcionalidades Locales del Dispositivo
 
- El módulo incluye un semáforo, con 2 LEDs, uno verde y uno rojo. Esta funcionalidad no se contemplan en las interacciones MQTT, ya que se comunica internamente mediante un buffer circular protegido. 
-	Semáforo LED.
-Cuando la cámara detecta un QR y lo publica en el bróker correspondiente, la ESP comanda al LED verde que se encienda; por el contrario, si no se detecta QR, se enciende el LED rojo. 
+<br>
+
+ El módulo incluye un semáforo, con 2 LEDs, uno verde y uno rojo. Esta funcionalidad no se contempla en las interacciones MQTT, ya que se comunica internamente mediante un buffer circular protegido. El semáforo LED indica cuando la cámara detecta un QR, haciendo que el LED verde se encienda y, por el contrario, si no lee QR, que se encienda el LED rojo. 
 
 <br>
 
@@ -115,51 +125,66 @@ Cuando la cámara detecta un QR y lo publica en el bróker correspondiente, la E
 ## Instrucciones para la Instalación e Integración
 
   ### 1. Instalar y configurar el entorno Arduino con las librerías especificadas, además de instalar el programa para la comunicación MQTT.
-  <br>
-  Para descargar las librerías también se puede hacer desde el library manager y board manager de Arduino IDE
+  
+ <br>
+ 
+ Para descargar las librerías también se puede hacer desde el library manager y board manager de Arduino IDE
+
+ <br>
 
  <p align="center">
-		<img height=400 width=600 align="center" src="./images/library_manager.png" />
+		<img height=400 width=700 align="center" src="./images/library_manager.png" />
  </p>
 
  <br>
 
  <p align="center">
-		<img height=400 width=600 align="center" src="./images/boards_manager.png" />
+		<img height=400 width=700 align="center" src="./images/boards_manager.png" />
  </p>
+
+ <br>
 
  Una vez descargadas las librerías necesarías para compilar el proyecto, seleccionar la placa en el cuadro de selección de placa, y cambiar a OPI PSRAM en Tools + PSRAM 
 
+ <br>
+
  <p align="center">
-		<img height=400 width=600 align="center" src="./images/selecc_placa_arduino.png" />
+		<img height=400 width=700 align="center" src="./images/selecc_placa_arduino.png" />
  </p>
 
  <br>
 
  <p align="center">
-		<img height=400 width=600 align="center" src="./images/opi_psram.png" />
+		<img height=400 width=700 align="center" src="./images/opi_psram.png" />
  </p>
+
+ <br>
   
   ### 2. Instalar el código fuente descargando la carpeta zip de este repositorio o usando git clone.
+  
   <br>
-Opción 1
-Click en el boton _Download ZIP_ 
+  
+  #### Opción 1 
+  Click en el boton _Download ZIP_ 
 
- <p align="center">
-		<img height=400 width=600 align="center" src="./images/down_zip.png" />
- </p>
-
-Opción 2
-Clonar el repositorio desde el terminal
-
-```sh
-git clone myapp myapp.c -l wiringPi
-```
+  <p align="center">
+		<img height=400 width=700 align="center" src="./images/down_zip.png" />
+  </p>
 
   <br>
+
+  #### Opción 2 
+  Clonar el repositorio desde el terminal
+
+  ```sh
+  git clone myapp myapp.c -l wiringPi
+  ```
+
+  <br>
+  
   ### 3. Modificar valores del código por los de la empresa.
 
-  Para conectar la ESP32-S3 al wifi y al broker MQTT de la emmpresa, modificar las constantes NET_SSID, NET_PASSWD, MQTT_SERVER_IP, MQTT_USERNAME y MQTT_PASSWORD del archivo `Config.h`
+  Para conectar la ESP32-S3 al wifi y al broker MQTT de la emmpresa, modificar las constantes NET_SSID, NET_PASSWD, MQTT_SERVER_IP, MQTT_USERNAME y MQTT_PASSWORD del archivo `Config.h` 
   
 		/**
 		 * @file  Config.h
@@ -183,8 +208,8 @@ git clone myapp myapp.c -l wiringPi
   		...
 
     		#endif // CONFIG_H
-      		
- Si se desea modificar los topics por unos más acordes para su integración en la flota de la empresa modificar los valores de HELLO_TOPIC, TOPIC_PRESENCIA, TOPIC_COBOT y TOPIC_PARADA_EMERGENCIA del archivo `Config.h` 
+
+<br> Si se desea modificar los topics por unos más acordes para su integración en la flota de la empresa modificar los valores de HELLO_TOPIC, TOPIC_PRESENCIA, TOPIC_COBOT y TOPIC_PARADA_EMERGENCIA del archivo `Config.h` 
   
 		/**
 		 * @file  Config.h
@@ -212,13 +237,19 @@ git clone myapp myapp.c -l wiringPi
   <br>
  
   ### 4. Montar el circuito como se indica en la [figura](#esquema-del-circuito).
+  
   <br>
+  
   ### 5. Conectar la placa al ordenador usando el puerto USB, compilar el proyecto y subir a la ESP32-S3.
+  
+ <br>
 
- Después de conectar la placa al ordenador, seleccionar el puerto que aparezca en el seleccionador de puertos en Tools + Port  
+ Después de conectar la placa, seleccionar el puerto que aparezca en el seleccionador de puertos en Tools + Port  
+
+ <br>
 
  <p align="center">
-		<img height=400 width=600 align="center" src="./images/puerto.png" />
+		<img height=400 width=700 align="center" src="./images/puerto.png" />
  </p>
 
  <br>
@@ -226,10 +257,12 @@ git clone myapp myapp.c -l wiringPi
  Compilar primero el código y, si no aparece ningún error, ejecutar en la placa
 
  <p align="center">
-		<img height=400 width=600 align="center" src="./images/comp_ejec.png" />
+		<img height=400 width=700 align="center" src="./images/comp_ejec.png" />
  </p>
 
-  <br>
+ <br>
+  
   ### 6. Desconectar la placa y situarla en su posición en [planta](#disposición-en-planta) conectada a una fuente de alimentación externa.
-  <br>
+  
+ <br>
 
