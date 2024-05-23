@@ -176,8 +176,10 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
   #### Opción 2 
   Clonar el repositorio desde el terminal
 
+  <br>
+
   ```sh
-  git clone myapp myapp.c -l wiringPi
+  git clone https://github.com/Tamala24/ROBOTRONIC.git
   ```
 
   <br>
@@ -255,6 +257,8 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
  <br>
 
  Compilar primero el código y, si no aparece ningún error, ejecutar en la placa
+
+ <br>
 
  <p align="center">
 		<img height=400 width=700 align="center" src="./images/comp_ejec.png" />
