@@ -160,7 +160,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
  <br>
   
-  ### 2. Instalar el código fuente descargando la carpeta zip de este repositorio o usando git clone.
+  ### 2. Instalar el código fuente.
   
   <br>
   
@@ -224,11 +224,9 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
       		// TOPICS
 		/**** HELLO_TOPIC ****/
-		#define HELLO_TOPIC               "A1"
-		/**** TOPIC_PRESENCIA : manda si detecta objeto "detect", si no, "libre" ****/
-		#define TOPIC_PRESENCIA           "A1/sensor/presencia/cinta/cajas/final"
-		/**** TOPIC_COBOT : recibe "operando" si el cobot está operando y "inactivo" si no ****/
-		#define TOPIC_COBOT               "A1/actuador/led/cinta/cajas/final"
+		#define HELLO_TOPIC               "A1" 
+		/**** TOPIC_QR : manda si detecta QR distinto ****/
+		#define TOPIC_QR                  "A1/sensor/camara/qr/cinta/cajas"
 		/**** TOPIC_PARADA_EMERGENCIA : manda o recibe "PARAR" si se ha pulsado el botón de emergencia ****/
 		#define TOPIC_PARADA_EMERGENCIA   "A1/sensor/boton/emergencia/cinta/cajas"
 
