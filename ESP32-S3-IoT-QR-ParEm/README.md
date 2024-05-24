@@ -23,8 +23,7 @@ Sistema basado en una ESP32-S3 que lee los códigos de producto que contienen lo
 
 ## Entorno
 
-El código se ha desarrollado en el entorno de desarrollo integrado de Arduino Arduino IDE. Para compilar y ejecutar el código descargar [aquí](https://www.arduino.cc/en/software).
-Para establecer la comunicación MQTT se recomienda el programa [MQTTX](https://mqttx.app/downloads), aunque se puede utilizar cualquier otro.
+El código se ha desarrollado en el entorno de desarrollo integrado de Arduino, [Arduino IDE](https://www.arduino.cc/en/software). Para establecer la comunicación MQTT se recomienda el programa [MQTTX](https://mqttx.app/downloads), aunque se puede utilizar cualquier otro.
 
 <br>
 
@@ -89,7 +88,7 @@ El montaje anterior se dispondrá en planta encima de un soporte unido a la cint
 A continuación se describen los diagramas de comunicación MQTT de las interacciones indirectas presentes en la estación robotizada:
 
 ### Interacción sensor botón emergencia - estación
-  Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico implementado en la automatización. La ESP32 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la automatización (robot UR, delta, todas las ESP32-S3) y detendrán inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
+  Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico presente en la automatización. La ESP32 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la célula (robot UR, delta, todas las ESP32-S3), deteniendo inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
 
 <br>
 
@@ -99,8 +98,8 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
   
 <br>
 
-### Interacción sensor cámara - base de datos
-  La ESP32-S3 publica en el topic “A1/sensor/camara/qr/cinta/cajas” la información que contiene el código QR que lee. La publicación de la información del QR en el bróker simula la introducción de datos de forma automática en una base de datos que almacena los datos en relación a las cajas producidas.
+### Interacción cámara - base de datos
+  La ESP32-S3 publica en el topic “A1/sensor/camara/qr/cinta/cajas” el código de producto que contiene el código QR leído. La publicación de la información del QR en el bróker simula la introducción de datos de forma automática en una base de datos que almacena los datos en relación a las cajas producidas.
 
 <br>
 
@@ -124,11 +123,11 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
 ## Instrucciones para la Instalación e Integración
 
-  ### 1. Instalar y configurar el entorno Arduino con las librerías especificadas, además de instalar el programa para la comunicación MQTT.
+  ### 1. Instalar y configurar el entorno [Arduino](#entorno) con las [librerías](#librerías) especificadas, además de instalar el programa para la comunicación [MQTT](#entorno).
   
  <br>
  
- Para descargar las librerías también se puede hacer desde el library manager y board manager de Arduino IDE
+ Para descargar las librerías también se puede hacer desde el _library manager_ y _board manager_ de Arduino IDE
 
  <br>
 
@@ -186,7 +185,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
   
   ### 3. Modificar valores del código por los de la empresa.
 
-  Para conectar la ESP32-S3 al wifi y al broker MQTT de la emmpresa, modificar las constantes NET_SSID, NET_PASSWD, MQTT_SERVER_IP, MQTT_USERNAME y MQTT_PASSWORD del archivo `Config.h` 
+  Para conectar la ESP32-S3 al Wi-Fi y al broker MQTT de la emmpresa, modificar las constantes NET_SSID, NET_PASSWD, MQTT_SERVER_IP, MQTT_USERNAME y MQTT_PASSWORD del archivo `Config.h` 
   
 		/**
 		 * @file  Config.h
