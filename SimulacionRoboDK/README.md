@@ -1,2 +1,2 @@
-# ROBOTRONIC AUTOMATION
-Implementation of a sensoring and comunication system using ESP32-S3 for the packaging of Ositos Lulu
+# Simulación RoboDK
+Simulación completa de la célula robotizada empleando la herramienta RoboDK.
