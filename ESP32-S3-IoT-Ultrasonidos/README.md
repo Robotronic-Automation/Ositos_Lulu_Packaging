@@ -15,15 +15,15 @@
 
 ## Descripción
 
-Sistema basado en una ESP32-S3 que detecta presencia de caja en la cinta mediante un sensor ultrasonidos, parando la cinta y avisando al cobot para que paletice en caso de detectar caja. Además, se señaliza el estado de la cinta mediante 2 LEDs, uno rojo que indica que está parada y otro verde cuando está activa, y un LED azul para indicar cuando el cobot está operando (LED encendido) o no (LED apagado). La comunicación inalámbrica se realiza mediante el protocolo MQTT y la comunicación local entre tareas haciendo uso de buffers circulares protegidos y variables protegidas. Como medida de seguridad se implementa una interrupción activada por la pulsación de un botón que para todo el sistema.
+Sistema basado en una ESP32-S3 que detecta presencia de caja en la cinta mediante un sensor ultrasonidos, parando la cinta y avisando al cobot para que paletice en caso de detectar caja. Además, se señaliza el estado de la cinta mediante 2 LEDs, uno rojo que indica que está parada (detección de caja) y otro verde cuando está activa (no peresencia de caja), y un LED azul para indicar cuando el cobot está operando (LED encendido) o no (LED apagado). La comunicación inalámbrica se realiza mediante el protocolo MQTT y la comunicación local entre tareas haciendo uso de buffers circulares protegidos y variables protegidas. Como medida de seguridad se implementa una interrupción activada por la pulsación de un botón que para todo el sistema.
+
 <br>
 
 ---
 
 ## Entorno
 
-El código se ha desarrollado en el entorno de desarrollo integrado de Arduino Arduino IDE. Para compilar y ejecutar el código descargar [aquí](https://www.arduino.cc/en/software).
-Para establecer la comunicación MQTT se recomienda el programa [MQTTX](https://mqttx.app/downloads), aunque se puede utilizar cualquier otro.
+El código se ha desarrollado en el entorno de desarrollo integrado de Arduino, [Arduino IDE](https://www.arduino.cc/en/software). Para establecer la comunicación MQTT se recomienda el programa [MQTTX](https://mqttx.app/downloads), aunque se puede utilizar cualquier otro.
 
 <br>
 
@@ -87,8 +87,8 @@ El montaje anterior se dispondrá en planta encima de un soporte unido a la cint
 
 A continuación se describen los diagramas de comunicación MQTT de las interacciones indirectas presentes en la estación robotizada:
 
-### Interacción sensor botón emergencia - estación
-  Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico implementado en la automatización. La ESP32 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la automatización (robot UR, delta, todas las ESP32-S3) y detendrán inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
+### Interacción botón emergencia - estación
+  Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico presente en la automatización. La ESP32-S3 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la célula (robot UR, delta, todas las ESP32-S3), deteniendo inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
 
 <br>
 
@@ -99,7 +99,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 <br>
 
 ### Interacción sensor ultrasonidos - actuador cobot
-  El sensor ultrasónico conectado a la ESP32-S3 se encarga de detectar la presencia o ausencia de una caja al final de la cinta transportadora de paletizado. En caso de encontrar una caja publicará “detect” en el topic “A1/sensor/presencia/cinta/cajas/final”, el cobot analizará el mensaje json y procederá a coger la caja y paletizarla.
+  El sensor ultrasónico conectado a la ESP32-S3 se encarga de detectar la presencia o ausencia de una caja al final de la cinta transportadora de paletizado. En caso de encontrar una caja, publicará un JSON con el campo "presencia" conteniendo el mensaje “detect” en el topic “A1/sensor/presencia/cinta/cajas/final”, en caso contrario, publicará "libre" en su lugar. El cobot analizará el mensaje: en el caso de ser "detect", procederá a coger la caja y paletizarla y, en el caso de ser "libre", el cobot esperará en la posición home hasta ser demandado.
 
 <br>
 
@@ -109,8 +109,8 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
 <br>
 
-### Interacción actuador cobot - actuador led
-Cuando el cobot inicia su operación de paletizado de una caja tras ser detectada por el sensor de ultrasonidos, publica “operando” en el topic “A1/actuador/led/cinta/cajas/final” y el led azul se enciende. Mientras el cobot no se encuentre en movimiento se publicará en el topic “inactivo” y el led permanecerá apagado. 
+### Interacción actuador cobot - actuador LED
+Cuando el cobot inicia su operación de paletizado de una caja tras ser detectada por el sensor de ultrasonidos, publica “operando” en el topic “A1/actuador/led/cinta/cajas/final” y el LED azul se enciende. Mientras el cobot no se encuentre en movimiento se publicará en el topic “inactivo” y el LED permanecerá apagado. 
 
 <br>
 
@@ -126,9 +126,8 @@ Cuando el cobot inicia su operación de paletizado de una caja tras ser detectad
 
 <br>
 
- El módulo incluye un semáforo, con 2 LEDs, uno verde y uno rojo, y el control de un servo motor para simular el motor de la cinta. Estas funcionalidades no se contemplan en las interacciones MQTT, ya que se comunican internamente mediante un buffers y variables protegidas. El semáforo LED indica cuando el sensor ultrasonidos detecta caja, haciendo que el LED verde se encienda y, por el contrario, si no hay presencia de caja, que se encienda el LED rojo. 
-Controlador Servomotor. 
- Suponemos que este motor es el que controla la cinta transportadora de cajas y está conectado a la ESP32-S3 que tiene el sensor ultrasónico.
+ El módulo incluye un semáforo, con 2 LEDs, uno verde y uno rojo, y el control de un servomotor para simular el motor de la cinta. Estas funcionalidades no se contemplan en las interacciones MQTT, ya que se comunican internamente mediante buffers y variables protegidas. El semáforo LED indica cuando el sensor ultrasonidos detecta caja y para el motor de la cinta, haciendo que el LED rojo se encienda y, por el contrario, si no hay presencia de caja y la cinta está activa, que se encienda el LED verde. 
+<br> Suponemos que este motor es el que controla la cinta transportadora de cajas y está conectado a la ESP32-S3 que tiene el sensor ultrasónico.
 
 <br>
 
@@ -136,11 +135,11 @@ Controlador Servomotor.
 
 ## Instrucciones para la Instalación e Integración
 
-  ### 1. Instalar y configurar el entorno Arduino con las librerías especificadas, además de instalar el programa para la comunicación MQTT.
+  ### 1. Instalar y configurar el entorno [Arduino](#entorno) con las [librerías](#librerías) especificadas, además de instalar el programa para la comunicación [MQTT](#entorno).
   
  <br>
  
- Para descargar las librerías también se puede hacer desde el library manager y board manager de Arduino IDE
+ Para descargar las librerías también se puede hacer desde el _library manager_ y _board manager_ de Arduino IDE
 
  <br>
 
