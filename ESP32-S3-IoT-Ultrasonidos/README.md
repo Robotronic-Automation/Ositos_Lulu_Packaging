@@ -49,7 +49,7 @@ Una vez instalados los programas, descargar las siguientes librerías:
 
 ## Documentación
 
-Puedes usar la [ESP32-S3-IoT-Ultrasonidos Online Documentation](https://github.com/Tamala24/ROBOTRONIC) para obtener toda la información sobre el código de este proyecto.
+Puedes usar la [ESP32-S3-IoT-Ultrasonidos Online Documentation](https://tamala24.github.io/ESP32-S3-Ultrasonidos-Doc/) para obtener toda la información sobre el código de este proyecto.
 
 <br>
 
