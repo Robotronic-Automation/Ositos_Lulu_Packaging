@@ -1,2 +1,2 @@
-# ROBOTRONIC AUTOMATION
-Implementation of a sensoring and comunication system using ESP32-S3 for the packaging of Ositos Lulu
+# Base de Datos NoSQL
+Base de datos implementada usando MongoDB
