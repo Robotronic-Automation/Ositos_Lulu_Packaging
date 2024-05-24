@@ -20,6 +20,7 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <Arduino.h>
+#include <cstdint> 
 #include <string>
 
 #include "src/quirc/quirc.h"  // Inclusión de la librería Quirc
@@ -31,9 +32,6 @@
 
 /**
  * @brief  Estructura para instanciar un buffer circular protegido para mensajes y otro para medidas 
- * @member QR_buffer. Buffer para guardar el codigo de producto que contiene el QR leído
- * @member MQTT_buffer. Buffer para almacenar mensajes a publicar en el broker MQTT
- * @member Color_buffer. Buffer para guardar el color del LED segun se lea o no qr
  */
 typedef struct Buffers
 {
@@ -81,6 +79,9 @@ void setup() {
 
   // Nos conectamos al broker MQTT, indicando un 'client-id'
   mqtt_connect(deviceID);
+
+  // Suscribimos al dispositivo a los topics MQTT relevantes
+  suscribirseATopics();
 
   // Configuración adicional específica del dispositivo
   on_setup();

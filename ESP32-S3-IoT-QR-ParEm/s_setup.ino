@@ -39,6 +39,8 @@ void on_setup()
     serializeJson(doc, hello_msg_json);
     enviarMensajePorTopic(HELLO_TOPIC, hello_msg_json);
 
+
+
     /* Create "QRCodeReader_Task" */
     xTaskCreatePinnedToCore(
              QRCodeReader_Task,             /* Task function. */
@@ -60,23 +62,24 @@ void on_setup()
              0);                            /* pin task to core 0 */
     
   /* Crear "Led_Task" */
-    xTaskCreate(
+    xTaskCreatePinnedToCore(
              Led_Task,                      /* Task function. */
              "Led_Task",                    /* Name of task. */
              10000,                         /* Stack size of task */
              &buffers.Color_buffer,         /* Parameter of the task */
              1,                             /* Priority of the task */
-             &Led_Task_Handle);             /* Task handle to keep track of created task */
+             &Led_Task_Handle,             /* Task handle to keep track of created task */
+             0);                            /* pin task to core 0 */
 
     /* Crear "GestorComMQTT_Task" */
-    xTaskCreate(
+    xTaskCreatePinnedToCore(
              GestorComMQTT_Task,            /* Task function. */
              "GestorComMQTT_Task",          /* name of task. */
              10000,                         /* Stack size of task */
              &buffers.MQTT_buffer,          /* parameter of the task */
              1,                             /* priority of the task */
-             &GestorComMQTT_Task_Handle);   /* Task handle to keep track of created task */
-  
+             &GestorComMQTT_Task_Handle,   /* Task handle to keep track of created task */
+             0);                            /* pin task to core 0 */
     delay(1000);
 
 }
