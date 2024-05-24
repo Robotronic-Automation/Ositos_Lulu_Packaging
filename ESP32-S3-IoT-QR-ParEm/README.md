@@ -87,7 +87,7 @@ El montaje anterior se dispondrá en planta encima de un soporte unido a la cint
 
 A continuación se describen los diagramas de comunicación MQTT de las interacciones indirectas presentes en la estación robotizada:
 
-### Interacción sensor botón emergencia - estación
+### Interacción botón emergencia - estación
   Esta interacción es la relativa a la parada de emergencia de todo el sistema robótico presente en la automatización. La ESP32 publicará en el topic “A1/sensor/boton/emergencia/cinta/cajas” el mensaje “PARAR” en caso de que se pulse el botón. A este topic se encontrarán suscritos todos los dispositivos electrónicos de la célula (robot UR, delta, todas las ESP32-S3), deteniendo inmediatamente su ejecución en caso de recibir el mensaje “PARAR”.
 
 <br>
@@ -210,7 +210,7 @@ A continuación se describen los diagramas de comunicación MQTT de las interacc
 
     		#endif // CONFIG_H
 
-<br> Si se desea modificar los topics por unos más acordes para su integración en la flota de la empresa modificar los valores de HELLO_TOPIC, TOPIC_PRESENCIA, TOPIC_COBOT y TOPIC_PARADA_EMERGENCIA del archivo `Config.h` 
+<br> Si se desea modificar los topics por unos más acordes para su integración en la flota de la empresa modificar los valores de HELLO_TOPIC, TOPIC_QR y TOPIC_PARADA_EMERGENCIA del archivo `Config.h` 
   
 		/**
 		 * @file  Config.h
