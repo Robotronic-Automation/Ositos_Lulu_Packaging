@@ -155,18 +155,12 @@ Cuando el cobot inicia su operación de paletizado de una caja tras ser detectad
 
  <br>
 
- Una vez descargadas las librerías necesarías para compilar el proyecto, seleccionar la placa en el cuadro de selección de placa, y cambiar a OPI PSRAM en Tools + PSRAM 
+ Una vez descargadas las librerías necesarías para compilar el proyecto, seleccionar la placa en el cuadro de selección de placa
 
  <br>
 
  <p align="center">
 		<img height=400 width=700 align="center" src="./images/selecc_placa_arduino.png" />
- </p>
-
- <br>
-
- <p align="center">
-		<img height=400 width=700 align="center" src="./images/opi_psram.png" />
  </p>
 
  <br>
@@ -253,7 +247,7 @@ Cuando el cobot inicia su operación de paletizado de una caja tras ser detectad
   
   <br>
   
-  ### 5. Conectar la placa al ordenador usando el puerto USB, compilar el proyecto y subir a la ESP32-S3.
+  ### 5. Conectar la placa al ordenador usando el puerto UART, compilar el proyecto y subir a la ESP32-S3.
   
  <br>
 
