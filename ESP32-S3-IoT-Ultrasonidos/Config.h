@@ -17,19 +17,14 @@
 #define DEVICE_GIIROB_PR2_ID      "17" //"giirobpr2_00"
 
 // WIFI
-//#define NET_SSID                  "UPV-PSK"
-//#define NET_PASSWD                "giirob-pr2-2023"
-#define NET_SSID                  "topo1234"
-#define NET_PASSWD                "every7652"
+#define NET_SSID                  "UPV-PSK"
+#define NET_PASSWD                "giirob-pr2-2023"
 
 // MQTT
-//#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"
-//#define MQTT_SERVER_PORT          1883
-//#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
-//#define MQTT_PASSWORD             "UPV2024"
-
-#define MQTT_SERVER_IP            "broker.emqx.io"
+#define MQTT_SERVER_IP            "mqtt.dsic.upv.es"
 #define MQTT_SERVER_PORT          1883
+#define MQTT_USERNAME             "giirob"    // Descomentar esta línea (y la siguiente) para que se conecte al broker MQTT usando usuario y contraseña
+#define MQTT_PASSWORD             "UPV2024"
 
 // TOPICS
 /**** HELLO_TOPIC ****/
