@@ -53,11 +53,11 @@ Para la automatización utilizamos tecnologías propias de la industria 4.0 como
     <img height=50 width=50 align="center" src="./assets/images/c_logo.jpg" />
     <img height=50 width=50 align="center" src="./assets/images/arduino_logo.jpg" />
     <img height=50 width=50 align="center" src="./assets/images/PYTHON.png" />
-    <img height=50 width=50 align="center" src="./assets/images/mongodb_logo.jpg" />
+    <img height=50 width=50 align="center" src="./assets/images/mongodb_logo.png" />
     <img height=50 width=50 align="center" src="./assets/images/BLENDER.png" />
     <img height=50 width=50 align="center" src="./assets/images/TINKERCAD.png" />
     <img height=50 width=50 align="center" src="./assets/images/GANTT.png" />
-    <img height=50 width=50 align="center" src="./assets/images/trello_logo.jpg" />
+    <img height=50 width=50 align="center" src="./assets/images/trello_logo.png" />
     <img height=50 width=50 align="center" src="./assets/images/git_logo.jpg" />
     <img height=50 width=50 align="center" src="./assets/images/github_logo.jpg" />
     <img height=50 width=50 align="center" src="./assets/images/CANVA.png" />
