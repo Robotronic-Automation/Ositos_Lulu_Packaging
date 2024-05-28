@@ -4,6 +4,21 @@ Página Web: [Robotronic Automation Web](https://tamala24.github.io/ROBOTRONIC_W
 Vídeo Promocional: [Robotronic Automation Promo](https://youtu.be/lWvmaNaFN50?feature=shared)
 <br>
 
+<p align="center">
+    <a href="https://drive.google.com/file/d/1LC0I8EBlhOmv5zv-_C7MWAeFx05VcwNt/view?usp=sharing">Google Drive</a>
+</p>
+<br><br>
+
+<p align="center">
+
+
+https://drive.google.com/file/d/1LC0I8EBlhOmv5zv-_C7MWAeFx05VcwNt/view?usp=sharing
+
+
+</p>
+
+<br><br>
+
 ---
 
 ## Contenidos
@@ -33,7 +48,9 @@ Este proyecto tiene como objetivo principal lograr una mejora tangible en la efi
 
 ## Tecnologías
 
-Para la automatización utilizaremos tecnologías propias de la industria 4.0 como los robots colaborativos, aplicaciones de modelado 3D como RoboDK, y elementos industriales como placas ESP32. Las dificultades previstas del proyecto se relacionan con los elementos anteriormente mencionados pues la interconexión y correcta comunicación de todos ellos es un gran reto que pensamos conquistar.
+Para la automatización utilizamos tecnologías propias de la industria 4.0 como los robots colaborativos, aplicaciones de modelado 3D como RoboDK, y elementos industriales como placas ESP32-S3.
+
+
 
 <br>
 
