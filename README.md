@@ -1,4 +1,3 @@
-<p align="center">
 # ROBOTRONIC AUTOMATION
 </p>
 <p align="center">
