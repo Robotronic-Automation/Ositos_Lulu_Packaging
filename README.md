@@ -1,7 +1,7 @@
 # ROBOTRONIC AUTOMATION
 </p>
 <p align="center">
-    <img src="./assets/images/robot2_sin_fondo.png" width="100px">
+    <img src="./assets/images/robot2_sin_fondo.png" width="120px">
 </p>
 
 <p align="center">
@@ -13,7 +13,7 @@
 <br>
 </p>
 
-<br><br>
+<br>
 
 ---
 
@@ -46,7 +46,25 @@ Este proyecto tiene como objetivo principal lograr una mejora tangible en la efi
 
 Para la automatización utilizamos tecnologías propias de la industria 4.0 como los robots colaborativos, aplicaciones de modelado 3D como RoboDK, y elementos industriales como placas ESP32-S3.
 
-
+<p align="center">
+    <img height=50 width=50 align="center" src="./images/robodk_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/ur_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/c++_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/c_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/arduino_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/PYTHON.png" />
+    <img height=50 width=50 align="center" src="./images/mongodb_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/BLENDER.png" />
+    <img height=50 width=50 align="center" src="./images/TINKERCAD.png" />
+    <img height=50 width=50 align="center" src="./images/GANTT.png" />
+    <img height=50 width=50 align="center" src="./images/trello_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/git_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/github_logo.jpg" />
+    <img height=50 width=50 align="center" src="./images/CANVA.png" />
+    <img height=50 width=50 align="center" src="./images/PW_POINT.png" />
+        
+<br>
+</p>
 
 <br>
 
