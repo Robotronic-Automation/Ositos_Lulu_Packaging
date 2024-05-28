@@ -1,20 +1,16 @@
 # ROBOTRONIC AUTOMATION
+
+<p align="center">
+    <img src="./assets/images/robot2_sin_fondo.png" width="50px">
+</p>
+
+<p align="center">
 Página Web: [Robotronic Automation Web](https://tamala24.github.io/ROBOTRONIC_WEB/)
 <br>
+</p>
+<p align="center">
 Vídeo Promocional: [Robotronic Automation Promo](https://youtu.be/lWvmaNaFN50?feature=shared)
 <br>
-
-<p align="center">
-    <a href="https://drive.google.com/file/d/1LC0I8EBlhOmv5zv-_C7MWAeFx05VcwNt/view?usp=sharing">Google Drive</a>
-</p>
-<br><br>
-
-<p align="center">
-
-
-https://drive.google.com/file/d/1LC0I8EBlhOmv5zv-_C7MWAeFx05VcwNt/view?usp=sharing
-
-
 </p>
 
 <br><br>
