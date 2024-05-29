@@ -9,6 +9,12 @@
 <br>
 </p>
 <p align="center">
+        <iframe src="https://youtu.be/lWvmaNaFN50?feature=shared" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                  <div align="justify-content">
+                    <h3 title="Women in Engineering" class="sessions_a">Promo Video</h3>
+                  </div>
+
+                  
      <a href="https://youtu.be/lWvmaNaFN50?feature=shared">Promo Video</a>
 <br>
 </p>
@@ -72,5 +78,5 @@ Para la automatización utilizamos tecnologías propias de la industria 4.0 como
 
 ## Agradecimientos
 
-Finalmente queremos agradecer a nuestros profesores de la asignatura de PR2; Francisco Blanes, Joan Fons y Eduardo Vendrell; por las oportunidades que nos han brindado de conocer la industrial actual y por asesorarnos con sus conocimientos en la realización de este proyecto. 
+Finalmente queremos agradecer a nuestros profesores de la asignatura de PR2, Francisco Blanes, Joan Fons y Eduardo Vendrell, por las oportunidades que nos han brindado de conocer la industrial actual y por asesorarnos con sus conocimientos en la realización de este proyecto. 
 
