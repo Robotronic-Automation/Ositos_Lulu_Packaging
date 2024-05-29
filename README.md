@@ -8,13 +8,7 @@
     <a href="https://tamala24.github.io/ROBOTRONIC_WEB/">WebPage</a>
 <br>
 </p>
-<p align="center">
-        <iframe src="https://youtu.be/lWvmaNaFN50?feature=shared" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-                  <div align="justify-content">
-                    <h3 title="Women in Engineering" class="sessions_a">Promo Video</h3>
-                  </div>
-
-                  
+<p align="center">                 
      <a href="https://youtu.be/lWvmaNaFN50?feature=shared">Promo Video</a>
 <br>
 </p>
