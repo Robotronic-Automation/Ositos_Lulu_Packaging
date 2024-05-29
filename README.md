@@ -74,3 +74,4 @@ Para la automatización utilizamos tecnologías propias de la industria 4.0 como
 
 Finalmente queremos agradecer a nuestros profesores de la asignatura de PR2, Francisco Blanes, Joan Fons y Eduardo Vendrell, por las oportunidades que nos han brindado de conocer la industrial actual y por asesorarnos con sus conocimientos en la realización de este proyecto. 
 
+<br>
