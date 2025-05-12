@@ -1,4 +1,4 @@
-# Ositos Lulu Packaging
+# OSITOS LULU PACKAGING
 </p>
 <p align="center">
     <img src="./assets/images/robot2_sin_fondo.png" width="120px">
